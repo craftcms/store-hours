@@ -63,10 +63,18 @@ class StoreHoursFieldType extends BaseFieldType
 				{
 					$day['open'] = DateTime::createFromString($day['open']);
 				}
+				else
+				{
+					$day['open'] = '';
+				}
 
 				if ((is_string($day['close']) && $day['close']) || (is_array($day['close']) && $day['close']['time']))
 				{
 					$day['close'] = DateTime::createFromString($day['close']);
+				}
+				else
+				{
+					$day['close'] = '';
 				}
 			}
 		}
