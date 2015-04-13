@@ -25,8 +25,6 @@ class StoreHoursFieldType extends BaseFieldType
 	 */
 	public function getInputHtml($name, $value)
 	{
-		$this->_convertTimes($value);
-
 		return craft()->templates->render('storehours/input', array(
 			'id'    => craft()->templates->formatInputId($name),
 			'name'  => $name,
@@ -41,6 +39,19 @@ class StoreHoursFieldType extends BaseFieldType
 	 * @return mixed
 	 */
 	public function prepValueFromPost($value)
+	{
+		$this->_convertTimes($value);
+
+		return $value;
+	}
+
+	/**
+	 * Prepares the field's value for use.
+	 *
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function prepValue($value)
 	{
 		$this->_convertTimes($value);
 
