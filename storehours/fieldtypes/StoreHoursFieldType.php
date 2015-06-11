@@ -40,7 +40,7 @@ class StoreHoursFieldType extends BaseFieldType
 	 */
 	public function prepValueFromPost($value)
 	{
-		$this->_convertTimes($value);
+		$this->_convertTimes($value, craft()->getTimeZone());
 
 		return $value;
 	}
@@ -64,15 +64,15 @@ class StoreHoursFieldType extends BaseFieldType
 	 * @access private
 	 * @param array &$value
 	 */
-	private function _convertTimes(&$value)
+	private function _convertTimes(&$value, $timezone = null)
 	{
 		if (is_array($value))
 		{
-			foreach ($value as &$day)
+			foreach ($value as &$day)	
 			{
 				if ((is_string($day['open']) && $day['open']) || (is_array($day['open']) && $day['open']['time']))
 				{
-					$day['open'] = DateTime::createFromString($day['open']);
+					$day['open'] = DateTime::createFromString($day['open'], $timezone);
 				}
 				else
 				{
@@ -81,7 +81,7 @@ class StoreHoursFieldType extends BaseFieldType
 
 				if ((is_string($day['close']) && $day['close']) || (is_array($day['close']) && $day['close']['time']))
 				{
-					$day['close'] = DateTime::createFromString($day['close']);
+					$day['close'] = DateTime::createFromString($day['close'], $timezone);
 				}
 				else
 				{
