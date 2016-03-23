@@ -54,7 +54,6 @@ class StoreHoursFieldType extends BaseFieldType
 	public function prepValue($value)
 	{
 		$this->_convertTimes($value);
-
 		return $value;
 	}
 
@@ -68,10 +67,11 @@ class StoreHoursFieldType extends BaseFieldType
 	{
 		if (is_array($value))
 		{
-			foreach ($value as &$day)	
+			foreach ($value as &$day)
 			{
 				if ((is_string($day['open']) && $day['open']) || (is_array($day['open']) && $day['open']['time']))
 				{
+					$day['open'] = date('Y-m-d') . substr($day['open'], 10);
 					$day['open'] = DateTime::createFromString($day['open'], $timezone);
 				}
 				else
@@ -81,12 +81,23 @@ class StoreHoursFieldType extends BaseFieldType
 
 				if ((is_string($day['close']) && $day['close']) || (is_array($day['close']) && $day['close']['time']))
 				{
+					$day['close'] = date('Y-m-d') . substr($day['close'], 10);
 					$day['close'] = DateTime::createFromString($day['close'], $timezone);
 				}
 				else
 				{
 					$day['close'] = '';
 				}
+
+				if ( ! empty($day['open']) && ! empty($day['close'])) {
+					$now = time();
+					if ( $day['open']->getTimestamp() > $now || $day['close']->getTimestamp() < $now) {
+						$day['isOpen'] = false;
+					} else {
+						$day['isOpen'] = true;
+					}
+				}
+
 			}
 		}
 	}
