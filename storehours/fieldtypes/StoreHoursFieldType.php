@@ -62,19 +62,23 @@ class StoreHoursFieldType extends BaseFieldType
 	 * Loops through the data and converts the times to DateTime objects.
 	 *
 	 * @access private
+	 *
 	 * @param array &$value
+	 * @param null  $timezone
+	 *
+	 * @return null
 	 */
 	private function _convertTimes(&$value, $timezone = null)
 	{
 		if (is_array($value))
 		{
-			foreach ($value as &$day)	
+			foreach ($value as &$day)
 			{
 				if ((is_string($day['open']) && $day['open']) || (is_array($day['open']) && $day['open']['time']))
 				{
 					$day['open'] = DateTime::createFromString($day['open'], $timezone);
 				}
-				else
+				else if (!($day['open'] instanceof DateTime))
 				{
 					$day['open'] = '';
 				}
@@ -83,7 +87,7 @@ class StoreHoursFieldType extends BaseFieldType
 				{
 					$day['close'] = DateTime::createFromString($day['close'], $timezone);
 				}
-				else
+				else if (!($day['close'] instanceof DateTime))
 				{
 					$day['close'] = '';
 				}
