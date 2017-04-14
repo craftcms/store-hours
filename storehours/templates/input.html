@@ -1,41 +1,43 @@
 {% macro day(id, name, value, day) %}
-    {% from "_includes/forms" import time %}
-        <tr>
-            <th>
-                {{ craft.i18n.getLocaleData().getWeekDayName(day) }}
-            </th>
-            <td>
-                {{ time({
-                    id: id~'-'~day~'-open',
-                    name: name~'['~day~'][open]',
-                    value: value ? value[day].open
-                }) }}
-            </td>
-            <td>
-                {{ time({
-                    id: id~'-'~day~'-close',
-                    name: name~'['~day~'][close]',
-                    value: value ? value[day].close
-                }) }}
-            </td>
-        </tr>
+{% from "_includes/forms" import time %}
+<tr>
+    <th>
+        {{ craft.i18n.getLocaleData().getWeekDayName(day) }}
+    </th>
+    <td>
+        {{ time({
+        id: id~'-'~day~'-open',
+        name: name~'['~day~'][open]',
+        value: value ? value[day].open
+        }) }}
+    </td>
+    <td>
+        {{ time({
+        id: id~'-'~day~'-close',
+        name: name~'['~day~'][close]',
+        value: value ? value[day].close
+        }) }}
+    </td>
+</tr>
 {% endmacro %}
 
 {% from _self import day %}
 
 {% set localeData = craft.i18n.getLocaleData() %}
+{% set startDay = currentUser.weekStartDay %}
+{% set days = (startDay..6)|merge(0..(startDay-1))%}
 
 <table class="data">
     <thead>
-        <tr>
-            <td></td>
-            <th>Opening Time</th>
-            <th>Closing Time</th>
-        </tr>
+    <tr>
+        <td></td>
+        <th>Opening Time</th>
+        <th>Closing Time</th>
+    </tr>
     </thead>
     <tbody>
-        {% for i in 0..6 %}
-            {{ day(id, name, value, i) }}
-        {% endfor %}
+    {% for i in days %}
+    {{ day(id, name, value, i) }}
+    {% endfor %}
     </tbody>
 </table>
