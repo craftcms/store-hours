@@ -6,7 +6,15 @@ namespace Craft;
  */
 class StoreHoursFieldType extends BaseFieldType
 {
-	/**
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'Store Hours';
+    }
+
+    /**
 	 * Returns the content attribute config.
 	 *
 	 * @return mixed
