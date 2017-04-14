@@ -1,4 +1,13 @@
 [
+
+    {
+        "version": "1.2",
+        "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.2.zip",
+        "date": "2017-04-14T12:00:00-08:00",
+        "notes": [
+            "[Improved] Store Hours fields now respect users’ Week Start Day settings."
+        ]
+    },
     {
         "version": "1.1",
         "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.1.zip",

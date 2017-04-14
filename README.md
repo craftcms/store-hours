@@ -35,6 +35,11 @@ Saturday: 10:00 AM - 07:00 PM
 
 ## Changelog
 
+
+### 1.2
+
+- Store Hours fields now respect users’ Week Start Day settings.
+
 ### 1.1
 
 - Updated to take advantage of new Craft 2.5 plugin features.
