@@ -1,5 +1,12 @@
 [
-
+    {
+        "version": "1.2.1",
+        "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.2.1.zip",
+        "date": "2017-04-21T12:00:00-08:00",
+        "notes": [
+            "[Fixed] Fixed a bug where you would get a PHP error using the Store Hours field if the current user’s Week Start Day setting was set to Sunday."
+        ]
+    },
     {
         "version": "1.2",
         "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.2.zip",

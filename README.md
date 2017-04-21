@@ -35,6 +35,9 @@ Saturday: 10:00 AM - 07:00 PM
 
 ## Changelog
 
+### 1.2.1
+
+- Fixed a bug where you would get a PHP error using the Store Hours field if the current user’s Week Start Day setting was set to Sunday.
 
 ### 1.2
 
