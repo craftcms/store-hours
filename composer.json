@@ -1,0 +1,48 @@
+{
+  "name": "craftcms/StoreHours",
+  "description": "This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week.",
+  "version": "2.0.0",
+  "type": "craft-plugin",
+  "keywords": [
+    "html",
+    "hours",
+    "cms",
+    "craftcms",
+    "json",
+    "yii2"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pixel & Tonic",
+      "homepage": "https://pixelandtonic.com/"
+    }
+  ],
+  "support": {
+    "email": "support@craftcms.com",
+    "issues": "https://github.com/craftcms/storeHours/issues?state=open",
+    "source": "https://github.com/craftcms/storeHours",
+    "docs": "https://github.com/craftcms/storeHours",
+    "rss": "https://github.com/craftcms/storeHours/commits/master.atom"
+  },
+  "require": {
+    "craftcms/cms": "~3.0.0-beta.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "craft\\storehours\\": "src/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ],
+  "extra": {
+    "name": "StoreHours",
+    "handle": "storeHours",
+    "changelogUrl": "https://raw.githubusercontent.com/craftcms/storeHours/master/CHANGELOG.md",
+    "downloadUrl": "https://github.com/craftcms/storeHours/archive/master.zip"
+  }
+}

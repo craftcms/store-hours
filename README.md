@@ -1,52 +1,23 @@
-# Store Hours plugin for Craft
+Store Hours for Craft CMS
+===================
 
-This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week.
+This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week. [Craft CMS](https://craftcms.com).
+
+## Requirements
+
+This plugin requires Craft CMS 3.0.0-beta.1 or later.
+
 
 ## Installation
 
-To install Store Hours, follow these steps:
+To install the plugin, follow these instructions.
 
-1.  Upload the storehours/ folder to your craft/plugins/ folder.
-2.  Go to Settings > Plugins from your Craft control panel and enable the Store Hours plugin.
+1. Open your terminal and go to your Craft project:
 
-## Template Rendering
+        cd /path/to/project
 
-```
-{% set days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+2. Then tell Composer to load the plugin:
 
-{% for dayHours in entry.storeHours %}
-	<div>
-		{{ days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') }}
-	</div>
-{% endfor %}
-```
+        composer require craftcms/storeHours
 
-Will output:
-
-```
-Sunday: 11:00 AM - 05:00 PM
-Monday: 10:00 AM - 08:00 PM
-Tuesday: 10:00 AM - 08:00 PM
-Wednesday: 10:00 AM - 08:00 PM
-Thursday: 10:00 AM - 08:00 PM
-Friday: 10:00 AM - 08:00 PM
-Saturday: 10:00 AM - 07:00 PM
-```
-
-## Changelog
-
-### 1.2.1
-
-- Fixed a bug where you would get a PHP error using the Store Hours field if the current user’s Week Start Day setting was set to Sunday.
-
-### 1.2
-
-- Store Hours fields now respect users’ Week Start Day settings.
-
-### 1.1
-
-- Updated to take advantage of new Craft 2.5 plugin features.
-
-### 1.0
-
-- Initial release
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for storeHours.
