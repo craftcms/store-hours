@@ -23,3 +23,28 @@ To install the plugin, follow these instructions.
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Store Hours.
 
 4. You can now create a Store Hours field type under Settings → Fields.
+
+
+## Template Rendering
+
+```
+{% set days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+
+{% for dayHours in entry.storeHours %}
+	<div>
+		{{ days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') }}
+	</div>
+{% endfor %}
+```
+
+Will output:
+
+```
+Sunday:    11:00 AM - 05:00 PM
+Monday:    10:00 AM - 08:00 PM
+Tuesday:   10:00 AM - 08:00 PM
+Wednesday: 10:00 AM - 08:00 PM
+Thursday:  10:00 AM - 08:00 PM
+Friday:    10:00 AM - 08:00 PM
+Saturday:  10:00 AM - 07:00 PM
+```
