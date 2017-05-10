@@ -1,7 +1,7 @@
 Store Hours for Craft CMS
 ===================
 
-This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week. [Craft CMS](https://craftcms.com).
+This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week.
 
 ## Requirements
 
