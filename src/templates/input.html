@@ -28,7 +28,7 @@
 {% set days = (startDay..6) %}
 
 {% if startDay != 0 %}
-    {% set days = days|merge(0..(startDay - 1)) %}
+    {% set days = days|merge(0..(startDay -1)) %}
 {% endif %}
 
 <table class="data">
