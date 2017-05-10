@@ -18,6 +18,8 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require craftcms/storeHours
+        composer require craftcms/store-hours
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for storeHours.
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Store Hours.
+
+4. You can now create a Store Hours field type under Settings → Fields.

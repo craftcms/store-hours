@@ -3,11 +3,12 @@ Changelog
 
 ## Unreleased
 
+## 2.0.0 - 2017-05-10
+
 ### Changed
-- Craft 3 compatibility.
+- Added support for Craft 3.
 
-
-##0.2.2 - 2016-07-04
+## 0.2.2 - 2016-07-04
 
 ### Added
 -Store Hours fields now respect users’ Week Start Day settings.
