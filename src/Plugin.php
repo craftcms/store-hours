@@ -6,16 +6,22 @@ use craft\services\Fields;
 use craft\storehours\fields\StoreHoursField;
 use yii\base\Event;
 
-
 /**
- * Store Hours plugin
+ * Store Hours plugin.
+ *
+ * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
+ * @since  2.0
  */
 class Plugin extends \craft\base\Plugin
 {
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
 
+        // Register our field type.
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
             $event->types[] = StoreHoursField::class;
         });
