@@ -1,8 +1,10 @@
 <?php
+
 namespace craft\storehours\fields;
 
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use DateTime;
 use Craft;
@@ -45,25 +47,53 @@ class StoreHoursField extends Field
      *
      * @param mixed                 $value
      * @param ElementInterface|null $element
+     *
      * @return string
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
         $value = Json::decode($value);
 
-        return Craft::$app->getView()->renderTemplate('storeHours/input', array(
-            'id'    => Craft::$app->view->formatInputId($this->handle),
-            'name'  => $this->handle,
+
+        return Craft::$app->getView()->renderTemplate('storeHours/input', [
+            'id' => Craft::$app->view->formatInputId($this->handle),
+            'name' => $this->handle,
             'value' => $value,
-        ));
+        ]);
     }
+
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+
+        foreach ($value as $key => $day) {
+            if (!empty($day['open']) && !empty($day['open']['time'])) {
+
+                $testTime = DateTimeHelper::toDateTime(['time' => $day['open']['time']]);
+                if (!$testTime instanceof DateTime) {
+                    $value[$key]['open']['time'] = null;
+                }
+            }
+            if (!empty($day['close']) && !empty($day['close']['time'])) {
+
+                $testTime = DateTimeHelper::toDateTime(['time' => $day['close']['time']]);
+                if (!$testTime instanceof DateTime) {
+                    $value[$key]['close']['time'] = null;
+                }
+            }
+        }
+
+        return parent::serializeValue($value, $element);
+    }
+
 
     /**
      * Returns the input value as it should be saved to the database.
      *
      * @param mixed $value
+     *
      * @return mixed
      */
+
     public function prepValueFromPost($value)
     {
         $this->_convertTimes($value, Craft::$app->getTimeZone());
@@ -76,12 +106,12 @@ class StoreHoursField extends Field
      * Prepares the field's value for use.
      *
      * @param mixed $value
+     *
      * @return mixed
      */
     public function prepValue($value)
     {
         $this->_convertTimes($value);
-
 
 
         return $value;
@@ -97,30 +127,24 @@ class StoreHoursField extends Field
      *
      * @return null
      */
+
     private function _convertTimes(&$value, $timezone = null)
     {
-        if (is_array($value))
-        {
-            foreach ($value as &$day)
-            {
-                if ((is_string($day['open']) && $day['open']) || (is_array($day['open']) && $day['open']['time']))
-                {
+        if (is_array($value)) {
+            foreach ($value as &$day) {
+                if ((is_string($day['open']) && $day['open']) || (is_array($day['open']) && $day['open']['time'])) {
                     $day['open'] = DateTime::createFromFormat($day['open'], $timezone);
-                }
-                else if (!($day['open'] instanceof DateTime))
-                {
+                } else if (!($day['open'] instanceof DateTime)) {
                     $day['open'] = '';
                 }
 
-                if ((is_string($day['close']) && $day['close']) || (is_array($day['close']) && $day['close']['time']))
-                {
+                if ((is_string($day['close']) && $day['close']) || (is_array($day['close']) && $day['close']['time'])) {
                     $day['close'] = DateTime::createFromFormat($day['close'], $timezone);
-                }
-                else if (!($day['close'] instanceof DateTime))
-                {
+                } else if (!($day['close'] instanceof DateTime)) {
                     $day['close'] = '';
                 }
             }
         }
     }
+
 }
