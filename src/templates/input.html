@@ -2,7 +2,7 @@
 {% from "_includes/forms" import time %}
 <tr>
     <th>
-        {{ craft.i18n.getLocaleData().getWeekDayName(day) }}
+        {{ craft.i18n.getLocaleData().getWeekDayName(day) | ucfirst }}
     </th>
     <td>
         {{ time({
@@ -35,8 +35,8 @@
     <thead>
     <tr>
         <td></td>
-        <th>Opening Time</th>
-        <th>Closing Time</th>
+        <th>{{ "Opening Time" | t('storehours') }}</th>
+        <th>{{ "Closing Time" | t('storehours') }}</th>
     </tr>
     </thead>
     <tbody>
