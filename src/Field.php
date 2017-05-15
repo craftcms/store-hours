@@ -7,7 +7,6 @@ use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use DateTime;
 use yii\db\Schema;
 
 /**
