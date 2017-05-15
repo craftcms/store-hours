@@ -43,7 +43,7 @@
   "extra": {
     "name": "Store Hours",
     "handle": "storeHours",
-    "schemaVersion": "1.0.1",
+    "schemaVersion": "1.0.2",
     "changelogUrl": "https://raw.githubusercontent.com/craftcms/store-hours/v2/CHANGELOG.md",
     "downloadUrl": "https://github.com/craftcms/store-hours/archive/v2.zip"
   }
