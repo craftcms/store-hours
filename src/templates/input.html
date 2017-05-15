@@ -2,7 +2,7 @@
 {% from "_includes/forms" import time %}
 <tr>
     <th>
-        {{ craft.i18n.getLocaleData().getWeekDayName(day) | ucfirst }}
+        {{ craft.i18n.getLocaleData().getWeekDayName(day) }}
     </th>
     <td>
         {{ time({
