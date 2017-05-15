@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 2.0.2 - 2017-05-15
+
+### Fixed
+- Fixed a bug where the plugin wasn’t updating Store Hours fields that had been created in Craft 2.x.
+
 ## 2.0.1 - 2017-05-15
 
 ### Added
