@@ -3,6 +3,7 @@
 namespace craft\storehours;
 
 use Craft;
+use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -35,14 +36,23 @@ class Field extends \craft\base\Field
         return Schema::TYPE_TEXT;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function normalizeValue($value, ElementInterface $element = null)
+    {
+        if (is_string($value)) {
+            $value = Json::decode($value);
+        }
+
+        return $value;
+    }
 
     /**
      * @inheritdoc
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        $value = Json::decode($value);
-
         return Craft::$app->getView()->renderTemplate('storeHours/input', [
             'id' => Craft::$app->view->formatInputId($this->handle),
             'name' => $this->handle,
@@ -53,24 +63,50 @@ class Field extends \craft\base\Field
     /**
      * @inheritdoc
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function getElementValidationRules(): array
     {
-        if (!$value) {
-            return null;
+        return ['validateTimes'];
+    }
+
+    /**
+     * Validates the submitted store hours data to make sure it’s all in the right format.
+     *
+     * @param ElementInterface $element
+     */
+    public function validateTimes(ElementInterface $element)
+    {
+        /** @var Element $element */
+        $value = (array)$element->getFieldValue($this->handle);
+        $normalizedValue = [];
+        $times = ['open', 'close'];
+
+        for ($day = 0; $day <= 6; $day++) {
+            foreach ($times as $time) {
+                if (isset($value[$day][$time]['time']) && DateTimeHelper::toDateTime($value[$day][$time]) !== false) {
+                    $normalizedValue[$day][$time] = $value[$day][$time];
+                } else {
+                    $normalizedValue[$day][$time] = null;
+                }
+            }
         }
 
-        foreach ($value as $key => $day) {
-            // Validate the open time
-            if (!empty($day['open']['time']) && DateTimeHelper::toDateTime($day['open']) === false) {
-                $value[$key]['open']['time'] = null;
-            }
+        $element->setFieldValue($this->handle, $normalizedValue);
+    }
 
-            // Validate the closing time
-            if (!empty($day['close']['time']) && DateTimeHelper::toDateTime($day['close']) === false) {
-                $value[$key]['close']['time'] = null;
+    /**
+     * @inheritdoc
+     */
+    public function isEmpty($value): bool
+    {
+        $times = ['open', 'close'];
+        for ($day = 0; $day <= 6; $day++) {
+            foreach ($times as $time) {
+                if (isset($value[$day][$time])) {
+                    return false;
+                }
             }
         }
 
-        return parent::serializeValue($value, $element);
+        return true;
     }
 }
