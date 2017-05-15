@@ -1,13 +1,12 @@
 <?php
 
-namespace craft\storehours\fields;
+namespace craft\storehours;
 
+use Craft;
 use craft\base\ElementInterface;
-use craft\base\Field;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use DateTime;
-use Craft;
 use yii\db\Schema;
 
 /**
@@ -18,7 +17,7 @@ use yii\db\Schema;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since  2.0
  */
-class StoreHoursField extends Field
+class Field extends \craft\base\Field
 {
     /**
      * @inheritdoc
@@ -43,7 +42,6 @@ class StoreHoursField extends Field
     public function getInputHtml($value, ElementInterface $element = null): string
     {
         $value = Json::decode($value);
-
 
         return Craft::$app->getView()->renderTemplate('storeHours/input', [
             'id' => Craft::$app->view->formatInputId($this->handle),

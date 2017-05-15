@@ -3,7 +3,6 @@ namespace craft\storehours;
 
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Fields;
-use craft\storehours\fields\StoreHoursField;
 use yii\base\Event;
 
 /**
@@ -23,7 +22,7 @@ class Plugin extends \craft\base\Plugin
 
         // Register our field type.
         Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
-            $event->types[] = StoreHoursField::class;
+            $event->types[] = Field::class;
         });
     }
 
