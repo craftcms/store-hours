@@ -24,7 +24,7 @@
     "issues": "https://github.com/craftcms/store-hours/issues?state=open",
     "source": "https://github.com/craftcms/store-hours",
     "docs": "https://github.com/craftcms/store-hours",
-    "rss": "https://github.com/craftcms/store-hours/commits/master.atom"
+    "rss": "https://github.com/craftcms/store-hours/commits/v2.atom"
   },
   "require": {
     "craftcms/cms": "~3.0.0-beta.1"
@@ -44,7 +44,7 @@
     "name": "Store Hours",
     "handle": "storeHours",
     "schemaVersion": "1.0.1",
-    "changelogUrl": "https://raw.githubusercontent.com/craftcms/store-hours/master/CHANGELOG.md",
-    "downloadUrl": "https://github.com/craftcms/store-hours/archive/master.zip"
+    "changelogUrl": "https://raw.githubusercontent.com/craftcms/store-hours/v2/CHANGELOG.md",
+    "downloadUrl": "https://github.com/craftcms/store-hours/archive/v2.zip"
   }
 }
