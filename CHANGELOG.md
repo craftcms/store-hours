@@ -1,7 +1,17 @@
 Changelog
 =========
 
-## Unreleased
+## 2.0.1 - 2017-05-15
+
+### Added
+- Added a Dutch translation. ([#13](https://github.com/craftcms/store-hours/pull/13))
+
+### Changed
+- Changed the Store Hours field class from `craft\storehours\fields\StoreHoursField` to `craft\storehours\Field`.
+
+### Fixed
+- Fixed an error that occurred when adding a Store Hours field to a global set. ([#14](https://github.com/craftcms/store-hours/pull/14))
+- Fixed the changelog and download URLs.
 
 ## 2.0.0 - 2017-05-10
 
