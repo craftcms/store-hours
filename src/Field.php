@@ -60,27 +60,14 @@ class Field extends \craft\base\Field
         }
 
         foreach ($value as $key => $day) {
-
-            // Make sure something was selected.
-            if (!empty($day['open']) && !empty($day['open']['time'])) {
-
-                // Check to see if they put a valid time in.
-                $testTime = DateTimeHelper::toDateTime(['time' => $day['open']['time']]);
-
-                // Not a valid time so nuke it.
-                if (!$testTime instanceof DateTime) {
-                    $value[$key]['open']['time'] = null;
-                }
+            // Validate the open time
+            if (!empty($day['open']['time']) && DateTimeHelper::toDateTime($day['open']) === false) {
+                $value[$key]['open']['time'] = null;
             }
 
-            // Do the same for closing time.
-            if (!empty($day['close']) && !empty($day['close']['time'])) {
-
-                $testTime = DateTimeHelper::toDateTime(['time' => $day['close']['time']]);
-
-                if (!$testTime instanceof DateTime) {
-                    $value[$key]['close']['time'] = null;
-                }
+            // Validate the closing time
+            if (!empty($day['close']['time']) && DateTimeHelper::toDateTime($day['close']) === false) {
+                $value[$key]['close']['time'] = null;
             }
         }
 
