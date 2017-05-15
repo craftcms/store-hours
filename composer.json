@@ -41,7 +41,7 @@
     }
   ],
   "extra": {
-    "name": "StoreHours",
+    "name": "Store Hours",
     "handle": "storeHours",
     "changelogUrl": "https://raw.githubusercontent.com/craftcms/storeHours/master/CHANGELOG.md",
     "downloadUrl": "https://github.com/craftcms/storeHours/archive/master.zip"
