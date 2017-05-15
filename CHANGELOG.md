@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 2.0.3 - 2017-05-15
+
+### Fixed
+- Fixed a deprecation error.
+
 ## 2.0.2 - 2017-05-15
 
 ### Fixed
