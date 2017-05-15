@@ -8,14 +8,14 @@
         {{ time({
             id: id~'-'~day~'-open',
             name: name~'['~day~'][open]',
-            value: value ? value[day].open['time']
+            value: value[day].open.time ?? ''
         }) }}
     </td>
     <td>
         {{ time({
             id: id~'-'~day~'-close',
             name: name~'['~day~'][close]',
-            value: value ? value[day].close['time']
+            value: value[day].close.time ?? ''
         }) }}
     </td>
 </tr>
