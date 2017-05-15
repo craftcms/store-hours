@@ -57,9 +57,6 @@ class StoreHoursField extends Field
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
-        if (!$value) {
-            return null;
-        }
 
         foreach ($value as $key => $day) {
 
