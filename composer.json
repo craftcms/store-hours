@@ -21,10 +21,10 @@
   ],
   "support": {
     "email": "support@craftcms.com",
-    "issues": "https://github.com/craftcms/storeHours/issues?state=open",
-    "source": "https://github.com/craftcms/storeHours",
-    "docs": "https://github.com/craftcms/storeHours",
-    "rss": "https://github.com/craftcms/storeHours/commits/master.atom"
+    "issues": "https://github.com/craftcms/store-hours/issues?state=open",
+    "source": "https://github.com/craftcms/store-hours",
+    "docs": "https://github.com/craftcms/store-hours",
+    "rss": "https://github.com/craftcms/store-hours/commits/master.atom"
   },
   "require": {
     "craftcms/cms": "~3.0.0-beta.1"
@@ -43,7 +43,7 @@
   "extra": {
     "name": "Store Hours",
     "handle": "storeHours",
-    "changelogUrl": "https://raw.githubusercontent.com/craftcms/storeHours/master/CHANGELOG.md",
-    "downloadUrl": "https://github.com/craftcms/storeHours/archive/master.zip"
+    "changelogUrl": "https://raw.githubusercontent.com/craftcms/store-hours/master/CHANGELOG.md",
+    "downloadUrl": "https://github.com/craftcms/store-hours/archive/master.zip"
   }
 }
