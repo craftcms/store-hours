@@ -1,6 +1,6 @@
 <?php
 
 return [
+    'Closing Time' => 'Sluitingstijd',
     'Opening Time' => 'Openingstijd',
-    'Closing Time' => 'Sluitingstijd'
 ];
