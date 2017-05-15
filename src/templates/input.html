@@ -23,7 +23,6 @@
 
 {% from _self import day %}
 
-{% set localeData = craft.i18n.getLocaleData() %}
 {% set startDay = currentUser.getPreference('weekStartDay') ?? craft.app.config.general.defaultWeekStartDay %}
 {% set days = (startDay..6) %}
 
