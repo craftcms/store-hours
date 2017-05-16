@@ -51,7 +51,7 @@ class StoreHoursPlugin extends BasePlugin
 	 */
 	public function getPluginUrl()
 	{
-		return 'https://github.com/pixelandtonic/StoreHours';
+		return 'https://github.com/craftcms/store-hours/tree/v1';
 	}
 
 	/**
@@ -59,7 +59,7 @@ class StoreHoursPlugin extends BasePlugin
 	 */
 	public function getDocumentationUrl()
 	{
-		return $this->getPluginUrl().'/blob/master/README.md';
+		return $this->getPluginUrl().'/blob/v1/README.md';
 	}
 
 	/**
@@ -67,6 +67,6 @@ class StoreHoursPlugin extends BasePlugin
 	 */
 	public function getReleaseFeedUrl()
 	{
-		return 'https://raw.githubusercontent.com/pixelandtonic/StoreHours/master/releases.json';
+		return 'https://raw.githubusercontent.com/craftcms/store-hours/v1/releases.json';
 	}
 }
