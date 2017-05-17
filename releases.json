@@ -1,7 +1,7 @@
 [
     {
         "version": "1.2.1",
-        "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.2.1.zip",
+        "downloadUrl": "https://github.com/craftcms/store-hours/archive/1.2.1.zip",
         "date": "2017-04-21T12:00:00-08:00",
         "notes": [
             "[Fixed] Fixed a PHP error that occurred if the current user’s Week Start Day setting was set to Sunday."
@@ -9,7 +9,7 @@
     },
     {
         "version": "1.2",
-        "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.2.zip",
+        "downloadUrl": "https://github.com/craftcms/store-hours/archive/1.2.0.zip",
         "date": "2017-04-18T12:00:00-08:00",
         "notes": [
             "[Improved] Store Hours fields now respect users’ Week Start Day settings."
@@ -17,7 +17,7 @@
     },
     {
         "version": "1.1",
-        "downloadUrl": "https://github.com/pixelandtonic/StoreHours/archive/1.1.zip",
+        "downloadUrl": "https://github.com/craftcms/store-hours/archive/1.1.0.zip",
         "date": "2015-12-20T12:00:00-08:00",
         "notes": [
             "[Improved] Updated to take advantage of new Craft 2.5 plugin features.",
