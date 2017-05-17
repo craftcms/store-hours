@@ -28,23 +28,25 @@ Changelog
 ### Changed
 - Added support for Craft 3.
 
-## 0.2.2 - 2016-07-04
+## 1.2.1 - 2017-04-21
+
+### Fixed
+- Fixed a PHP error that occurred if the current user’s Week Start Day setting was set to Sunday. ([#12](https://github.com/craftcms/store-hours/issues/12))
+
+## 1.2.0 - 2017-04-18
 
 ### Added
--Store Hours fields now respect users’ Week Start Day settings.
+- Store Hours fields now respect users’ Week Start Day settings. ([#11](https://github.com/craftcms/store-hours/issues/11))
 
-## 0.1.1 - 2015-12-20
+## 1.1.0 - 2015-12-20
 
-### Fixed
--Updated to take advantage of new Craft 2.5 plugin features.
-
-
-## 0.1.0 - 2014-07-23
+### Changed
+- Updated to take advantage of new Craft 2.5 plugin features.
 
 ### Fixed
- -Fixed a bug where blank times were saved as arrays
+- Fixed a bug where blank times were being saved as arrays.
+- Fixed a bug where times were not reflecting the system timezone. ([#3](https://github.com/craftcms/store-hours/issues/3))
 
+## 1.0.0 - 2014-07-16
 
-## 0.1.0 - 2014-07-16
-
-Initial release.
+- Initial release.
