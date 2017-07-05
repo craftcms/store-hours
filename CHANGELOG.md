@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## Unreleased
+
+### Changed
+- Craft 3 Beta 20 compatibility.
+
 ## 2.0.3 - 2017-05-15
 
 ### Fixed

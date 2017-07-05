@@ -24,7 +24,7 @@ class Field extends \craft\base\Field
      */
     public static function displayName(): string
     {
-        return Craft::t('storehours', 'Store Hours');
+        return Craft::t('store-hours', 'Store Hours');
     }
 
     /**
