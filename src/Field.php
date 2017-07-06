@@ -52,7 +52,7 @@ class Field extends \craft\base\Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        return Craft::$app->getView()->renderTemplate('storeHours/input', [
+        return Craft::$app->getView()->renderTemplate('store-hours/input', [
             'id' => Craft::$app->view->formatInputId($this->handle),
             'name' => $this->handle,
             'value' => $value,
