@@ -34,12 +34,6 @@
       "craft\\storehours\\": "src/"
     }
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://asset-packagist.org"
-    }
-  ],
   "extra": {
     "name": "Store Hours",
     "handle": "store-hours",
