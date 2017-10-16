@@ -87,7 +87,7 @@ class Field extends \craft\base\Field
         for ($day = 0; $day <= 6; $day++) {
             foreach ($times as $time) {
                 if (isset($value[$day][$time]['time']) && DateTimeHelper::toDateTime($value[$day][$time]) !== false) {
-                    $normalizedValue[$day][$time] = $value[$day][$time];
+                    $normalizedValue[$day][$time] = $value[$day][$time]['time'];
                 } else {
                     $normalizedValue[$day][$time] = null;
                 }
