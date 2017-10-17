@@ -48,9 +48,15 @@ class StoreHoursFieldType extends BaseFieldType
 	 */
 	public function prepValueFromPost($value)
 	{
-		$this->_convertTimes($value, craft()->getTimeZone());
+        $normalizedValue = $value;
+        $value = [];
 
-		return $value;
+        for ($day = 0; $day <= 6; $day++) {
+            $value[$day] = $normalizedValue[$day];
+        }
+        $this->_convertTimes($value, craft()->getTimeZone());
+
+        return $value;
 	}
 
 	/**
