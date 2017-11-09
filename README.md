@@ -16,9 +16,8 @@ To install Store Hours, follow these steps:
 
 {% for dayHours in entry.storeHours %}
     <li>
-		{{- days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') -}}
-	</li>
-    </p>
+        {{- days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') -}}
+    </li>
 {% endfor %}
 ```
 
