@@ -32,3 +32,16 @@ Will output:
 <li>Friday: 10:00 AM - 08:00 PM</li>
 <li>Saturday: 10:00 AM - 07:00 PM</li>
 ```
+
+If you want to show Monday’s hours first, do this:
+
+```twig
+{% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+{% set storeHours = entry.storeHours[1:]|merge(entry.storeHours[0:1]) %}
+
+{% for dayHours in storeHours %}
+    <li>
+        {{- days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') -}}
+    </li>
+{% endfor %}
+```
