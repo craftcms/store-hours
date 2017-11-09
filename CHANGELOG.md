@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 2.0.5 - 2017-11-09
+
+### Fixed
+- Fixed some bugs.
+
 ## 2.0.4 - 2017-07-07
 
 ### Changed
@@ -32,6 +37,11 @@ Changelog
 
 ### Changed
 - Added support for Craft 3.
+
+## 1.2.2 - 2017-11-09
+
+### Fixed
+- Fixed a bug where looping through the field data on the front end could return the days out of order, if the user that saved it had a different Week Start Day than Sunday. ([#19](https://github.com/craftcms/store-hours/issues/19))
 
 ## 1.2.1 - 2017-04-21
 
