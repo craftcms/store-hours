@@ -55,7 +55,7 @@ If you want to show Monday’s hours first, do this:
 {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
 {% set storeHours = entry.storeHours[1:]|merge(entry.storeHours[0:1]) %}
 
-{% for dayHours in entry.storeHours %}
+{% for dayHours in storeHours %}
     <li>
         {{- days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') -}}
     </li>
