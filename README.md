@@ -15,9 +15,9 @@ To install Store Hours, follow these steps:
 {% set days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
 
 {% for dayHours in entry.storeHours %}
-	<div>
-		{{ days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') }}
-	</div>
+    <div>
+        {{ days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') }}
+    </div>
 {% endfor %}
 ```
 
