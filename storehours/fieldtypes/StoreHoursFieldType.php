@@ -48,12 +48,13 @@ class StoreHoursFieldType extends BaseFieldType
 	 */
 	public function prepValueFromPost($value)
 	{
-        $normalizedValue = $value;
-        $value = [];
+        // Make sure the data is in the correct order (starting with Sunday)
+        ksort($value, SORT_NUMERIC);
 
-        for ($day = 0; $day <= 6; $day++) {
-            $value[$day] = $normalizedValue[$day];
-        }
+        // Drop the keys
+        $value = array_values($value);
+
+        // Convert times to DateTime objects
         $this->_convertTimes($value, craft()->getTimeZone());
 
         return $value;
