@@ -49,7 +49,53 @@ class Field extends \craft\base\Field
             $value = Json::decode($value);
         }
 
-        return $value;
+        $normalized = [];
+        $times = ['open', 'close'];
+
+        for ($day = 0; $day <= 6; $day++) {
+            foreach ($times as $time) {
+                if (
+                    isset($value[$day][$time]) &&
+                    ($date = DateTimeHelper::toDateTime($value[$day][$time])) !== false
+                ) {
+                    $normalized[$day][$time] = $date;
+                } else {
+                    $normalized[$day][$time] = null;
+                }
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        $serialized = [];
+        $times = ['open', 'close'];
+
+        for ($day = 0; $day <= 6; $day++) {
+            foreach ($times as $time) {
+                $timeValue = $value[$day][$time];
+                if ($timeValue instanceof \DateTime) {
+                    $serialized[$day][$time] = $timeValue->format(\DateTime::ATOM);
+                } else {
+                    $serialized[$day][$time] = null;
+                }
+            }
+        }
+
+        return $serialized;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSearchKeywords($value, ElementInterface $element): string
+    {
+        return '';
     }
 
     /**
@@ -62,39 +108,6 @@ class Field extends \craft\base\Field
             'name' => $this->handle,
             'value' => $value,
         ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getElementValidationRules(): array
-    {
-        return ['validateTimes'];
-    }
-
-    /**
-     * Validates the submitted store hours data to make sure it’s all in the right format.
-     *
-     * @param ElementInterface $element
-     */
-    public function validateTimes(ElementInterface $element)
-    {
-        /** @var Element $element */
-        $value = (array)$element->getFieldValue($this->handle);
-        $normalizedValue = [];
-        $times = ['open', 'close'];
-
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                if (isset($value[$day][$time]['time']) && DateTimeHelper::toDateTime($value[$day][$time]) !== false) {
-                    $normalizedValue[$day][$time] = $value[$day][$time]['time'];
-                } else {
-                    $normalizedValue[$day][$time] = null;
-                }
-            }
-        }
-
-        $element->setFieldValue($this->handle, $normalizedValue);
     }
 
     /**

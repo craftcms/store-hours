@@ -1,24 +1,24 @@
 {% macro day(id, name, value, day) %}
-{% from "_includes/forms" import time %}
-<tr>
-    <th>
-        {{ craft.app.locale.getWeekDayName(day) }}
-    </th>
-    <td>
-        {{ time({
-            id: id~'-'~day~'-open',
-            name: name~'['~day~'][open]',
-            value: value[day].open ?? ''
-        }) }}
-    </td>
-    <td>
-        {{ time({
-            id: id~'-'~day~'-close',
-            name: name~'['~day~'][close]',
-            value: value[day].close ?? ''
-        }) }}
-    </td>
-</tr>
+    {% from "_includes/forms" import time %}
+    <tr>
+        <th>
+            {{ craft.app.locale.getWeekDayName(day) }}
+        </th>
+        <td>
+            {{ time({
+                id: id~'-'~day~'-open',
+                name: name~'['~day~'][open]',
+                value: value[day].open
+            }) }}
+        </td>
+        <td>
+            {{ time({
+                id: id~'-'~day~'-close',
+                name: name~'['~day~'][close]',
+                value: value[day].close
+            }) }}
+        </td>
+    </tr>
 {% endmacro %}
 
 {% from _self import day %}
