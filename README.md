@@ -11,24 +11,25 @@ To install Store Hours, follow these steps:
 
 ## Template Rendering
 
-```
+```twig
 {% set days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
 
 {% for dayHours in entry.storeHours %}
-    <div>
-        {{ days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') }}
-    </div>
+    <li>
+		{{- days[loop.index0] }}: {{ dayHours.open|date('h:i a') }} - {{ dayHours.close|date('h:i a') -}}
+	</li>
+    </p>
 {% endfor %}
 ```
 
 Will output:
 
-```
-Sunday: 11:00 AM - 05:00 PM
-Monday: 10:00 AM - 08:00 PM
-Tuesday: 10:00 AM - 08:00 PM
-Wednesday: 10:00 AM - 08:00 PM
-Thursday: 10:00 AM - 08:00 PM
-Friday: 10:00 AM - 08:00 PM
-Saturday: 10:00 AM - 07:00 PM
+```html
+<li>Sunday: 11:00 AM - 05:00 PM</li>
+<li>Monday: 10:00 AM - 08:00 PM</li>
+<li>Tuesday: 10:00 AM - 08:00 PM</li>
+<li>Wednesday: 10:00 AM - 08:00 PM</li>
+<li>Thursday: 10:00 AM - 08:00 PM</li>
+<li>Friday: 10:00 AM - 08:00 PM</li>
+<li>Saturday: 10:00 AM - 07:00 PM</li>
 ```
