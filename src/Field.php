@@ -24,12 +24,46 @@ use yii\db\Schema;
  */
 class Field extends \craft\base\Field
 {
+    // Static
+    // =========================================================================
+
     /**
      * @inheritdoc
      */
     public static function displayName(): string
     {
         return Craft::t('store-hours', 'Store Hours');
+    }
+
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var string[] The time slot handles
+     */
+    public $slots = ['open', 'close'];
+
+    /**
+     * @var string[] The time slot labels
+     */
+    public $slotLabels;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        if ($this->slotLabels === null) {
+            $this->slotLabels = [
+                Craft::t('store-hours', 'Opening Time'),
+                Craft::t('store-hours', 'Closing Time')
+            ];
+        }
+
+        parent::init();
     }
 
     /**
@@ -50,17 +84,16 @@ class Field extends \craft\base\Field
         }
 
         $normalized = [];
-        $times = ['open', 'close'];
 
         for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
+            foreach ($this->slots as $slot) {
                 if (
-                    isset($value[$day][$time]) &&
-                    ($date = DateTimeHelper::toDateTime($value[$day][$time])) !== false
+                    isset($value[$day][$slot]) &&
+                    ($date = DateTimeHelper::toDateTime($value[$day][$slot])) !== false
                 ) {
-                    $normalized[$day][$time] = $date;
+                    $normalized[$day][$slot] = $date;
                 } else {
-                    $normalized[$day][$time] = null;
+                    $normalized[$day][$slot] = null;
                 }
             }
         }
@@ -74,15 +107,14 @@ class Field extends \craft\base\Field
     public function serializeValue($value, ElementInterface $element = null)
     {
         $serialized = [];
-        $times = ['open', 'close'];
 
         for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                $timeValue = $value[$day][$time];
+            foreach ($this->slots as $slot) {
+                $timeValue = $value[$day][$slot];
                 if ($timeValue instanceof \DateTime) {
-                    $serialized[$day][$time] = $timeValue->format(\DateTime::ATOM);
+                    $serialized[$day][$slot] = $timeValue->format(\DateTime::ATOM);
                 } else {
-                    $serialized[$day][$time] = null;
+                    $serialized[$day][$slot] = null;
                 }
             }
         }
@@ -115,10 +147,9 @@ class Field extends \craft\base\Field
      */
     public function isEmpty($value): bool
     {
-        $times = ['open', 'close'];
         for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                if (isset($value[$day][$time])) {
+            foreach ($this->slots as $slot) {
+                if (isset($value[$day][$slot])) {
                     return false;
                 }
             }
