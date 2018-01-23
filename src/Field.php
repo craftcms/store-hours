@@ -8,7 +8,6 @@
 namespace craft\storehours;
 
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -47,6 +46,16 @@ class Field extends \craft\base\Field
      * @var string[] The time slot labels
      */
     public $slotLabels;
+
+    /**
+     * @var string[] field options table columns
+     */
+    public $columns;
+
+    /**
+     * @var string[] field options table defaults
+     */
+    public $defaults;
 
     // Public Methods
     // =========================================================================
@@ -128,6 +137,44 @@ class Field extends \craft\base\Field
     public function getSearchKeywords($value, ElementInterface $element): string
     {
         return '';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        $columns = $this->columns;
+        $defaults = $this->defaults;
+
+        if (empty($columns)) {
+            $columns = [
+                'label' => [
+                    'heading' => 'Label',
+                    'handle' => 'label',
+                    'type' => 'singleline',
+                    'autopopulate' => 'handle'
+                ],
+                'handle' => [
+                    'heading' => 'Handle',
+                    'handle' => 'handle',
+                    'type' => 'singleline'
+                ]
+            ];
+        }
+
+        return Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField', [
+            [
+                'label' => Craft::t('app', 'Additional Slots'),
+                'instructions' => Craft::t('app', 'Add additional time slots.'),
+                'id' => 'defaults',
+                'name' => 'defaults',
+                'cols' => $columns,
+                'rows' => $defaults,
+                'addRowLabel' => Craft::t('app', 'Add a column'),
+                'initJs' => true
+            ]
+        ]);
     }
 
     /**
