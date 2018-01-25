@@ -37,15 +37,6 @@ class Field extends \craft\base\Field
     // Properties
     // =========================================================================
 
-    /**
-     * @var string[] The time slot handles
-     */
-    public $slots = ['open', 'close'];
-
-    /**
-     * @var string[] The time slot labels
-     */
-    public $slotLabels;
 
     /**
      * @var string[] field options table columns
@@ -53,9 +44,21 @@ class Field extends \craft\base\Field
     public $columns;
 
     /**
-     * @var string[] field options table defaults
+     * @var string[] The row labels
      */
-    public $defaults;
+    public $slots;
+
+    /**
+     * @var string[] The column labels
+     */
+    public $columnHeadings;
+
+    /**
+     * @var string[] The row labels
+     */
+    public $rowHeadings;
+
+
 
     // Public Methods
     // =========================================================================
@@ -65,13 +68,6 @@ class Field extends \craft\base\Field
      */
     public function init()
     {
-        if ($this->slotLabels === null) {
-            $this->slotLabels = [
-                Craft::t('store-hours', 'Opening Time'),
-                Craft::t('store-hours', 'Closing Time')
-            ];
-        }
-
         parent::init();
     }
 
@@ -94,20 +90,52 @@ class Field extends \craft\base\Field
 
         $normalized = [];
 
+        if (!is_array($value) || empty($this->columnHeadings)) {
+            return null;
+        }
+
         for ($day = 0; $day <= 6; $day++) {
             foreach ($this->slots as $slot) {
                 if (
-                    isset($value[$day][$slot]) &&
-                    ($date = DateTimeHelper::toDateTime($value[$day][$slot])) !== false
+                    isset($value[$day][$slot['handle']]) &&
+                    ($date = DateTimeHelper::toDateTime($value[$day][$slot['handle']])) !== false
                 ) {
-                    $normalized[$day][$slot] = $date;
+                    $normalized[$day][$slot['handle']] = $date;
                 } else {
-                    $normalized[$day][$slot] = null;
+                    $normalized[$day][$slot['handle']] = null;
                 }
             }
         }
 
         return $normalized;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function normalizeValueEX($value, ElementInterface $element = null)
+    {
+        if (is_string($value) && !empty($value)) {
+            $value = Json::decode($value);
+        } else if ($value === null && $this->isFresh($element) && is_array($this->defaults)) {
+            $value = array_values($this->defaults);
+        }
+
+        if (!is_array($value) || empty($this->columns)) {
+            return null;
+        }
+
+        // Normalize the values and make them accessible from both the col IDs and the handles
+        foreach ($value as &$row) {
+            foreach ($this->columns as $colId => $col) {
+                $row[$colId] = $this->_normalizeCellValue($col['type'], $row[$colId] ?? null);
+                if ($col['handle']) {
+                    $row[$col['handle']] = $row[$colId];
+                }
+            }
+        }
+
+        return $value;
     }
 
     /**
@@ -119,11 +147,11 @@ class Field extends \craft\base\Field
 
         for ($day = 0; $day <= 6; $day++) {
             foreach ($this->slots as $slot) {
-                $timeValue = $value[$day][$slot];
+                $timeValue = $value[$day][$slot['handle']];
                 if ($timeValue instanceof \DateTime) {
-                    $serialized[$day][$slot] = $timeValue->format(\DateTime::ATOM);
+                    $serialized[$day][$slot['handle']] = $timeValue->format(\DateTime::ATOM);
                 } else {
-                    $serialized[$day][$slot] = null;
+                    $serialized[$day][$slot['handle']] = null;
                 }
             }
         }
@@ -145,7 +173,8 @@ class Field extends \craft\base\Field
     public function getSettingsHtml()
     {
         $columns = $this->columns;
-        $defaults = $this->defaults;
+        $slots = $this->slots;
+
 
         if (empty($columns)) {
             $columns = [
@@ -163,14 +192,15 @@ class Field extends \craft\base\Field
             ];
         }
 
+
         return Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField', [
             [
-                'label' => Craft::t('app', 'Additional Slots'),
-                'instructions' => Craft::t('app', 'Add additional time slots.'),
-                'id' => 'defaults',
-                'name' => 'defaults',
+                'label' => Craft::t('app', 'Time Slots'),
+                'instructions' => Craft::t('app', 'Add custom time slots.'),
+                'id' => 'slots',
+                'name' => 'slots',
                 'cols' => $columns,
-                'rows' => $defaults,
+                'rows' => $slots,
                 'addRowLabel' => Craft::t('app', 'Add a column'),
                 'initJs' => true
             ]
@@ -182,10 +212,62 @@ class Field extends \craft\base\Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        return Craft::$app->getView()->renderTemplate('store-hours/input', [
-            'id' => Craft::$app->view->formatInputId($this->handle),
-            'name' => $this->handle,
-            'value' => $value,
+        $slots = $this->slots;
+
+        $typeOptions = [
+            'singleline' => Craft::t('app', 'Single-line text'),
+            'time' => Craft::t('app', 'Time'),
+            'color' => Craft::t('app', 'Color'),
+        ];
+
+        foreach ($slots as $slot) {
+            $slotLabels[] = [
+                $slot['label'] => [
+                    'heading' => Craft::t('app', $slot['label']),
+                    'type' => 'time',
+                ],
+            ];
+        }
+
+        $columnHeadings = array_map(function($a) {return array_pop($a);}, $slotLabels);
+
+        $slotLabels = [
+            'heading' => [
+                'heading' => Craft::t('app', '' ),
+                'type' => 'heading',
+            ],
+        ];
+
+        array_unshift($columnHeadings, $slotLabels['heading']);
+
+        $startDay = Craft::$app->getUser()->getIdentity()->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay;
+
+        $days = range($startDay, 6, 1);
+        if ($startDay != 0) {
+            $days = array_merge($days, range(0, $startDay - 1, -1));
+        }
+
+        foreach ($days as $day) {
+            $weekDays[] = [
+                'heading' => [
+                    'heading' => Craft::t('app', Craft::$app->getLocale()->getWeekDayName($day)),
+                    'type' => 'heading',
+                ],
+            ];
+
+            $rowHeadings = array_map(function($a) {return array_pop($a);}, $weekDays);
+        }
+
+        return Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField', [
+            [
+                'instructions' => Craft::t('app', 'Add Store Hours.'),
+                'id' => 'slots',
+                'name' => 'slots',
+                'cols' => $columnHeadings,
+                'rows' => $rowHeadings,
+                'initJs' => false,
+                'staticRows' => true
+            ]
         ]);
     }
 
