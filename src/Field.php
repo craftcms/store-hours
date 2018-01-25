@@ -2,26 +2,29 @@
 /**
  * @link      https://craftcms.com/
  * @copyright Copyright (c) Pixel & Tonic, Inc.
- * @license   MIT
+ * @license   https://craftcms.github.io/license/
  */
 
 namespace craft\storehours;
 
 use Craft;
+use craft\base\Element;
 use craft\base\ElementInterface;
+use craft\fields\data\ColorData;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
+use craft\validators\ColorValidator;
+use craft\web\assets\tablesettings\TableSettingsAsset;
+use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
 /**
- * Store Hours field type
- *
- * @property string $contentColumnType
+ * Store Hours represents a Store Hours field.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since  2.0
+ * @since  3.0
  */
-class Field extends \craft\base\Field
+class Field extends craft\base\Field
 {
     // Static
     // =========================================================================
@@ -31,34 +34,26 @@ class Field extends \craft\base\Field
      */
     public static function displayName(): string
     {
-        return Craft::t('store-hours', 'Store Hours');
+        return Craft::t('app', 'Store Hours');
     }
 
     // Properties
     // =========================================================================
 
-
     /**
-     * @var string[] field options table columns
+     * @var array|null The columns that should be shown in the table
      */
     public $columns;
 
     /**
-     * @var string[] The row labels
+     * @var array The default row values that new elements should have
      */
-    public $slots;
+    public $defaults;
 
     /**
-     * @var string[] The column labels
+     * @var string The type of database column the field should have in the content table
      */
-    public $columnHeadings;
-
-    /**
-     * @var string[] The row labels
-     */
-    public $rowHeadings;
-
-
+    public $columnType = Schema::TYPE_TEXT;
 
     // Public Methods
     // =========================================================================
@@ -69,6 +64,17 @@ class Field extends \craft\base\Field
     public function init()
     {
         parent::init();
+
+        // Convert default date cell values to ISO8601 strings
+        if (!empty($this->columns) && $this->defaults !== null) {
+            foreach ($this->columns as $colId => $col) {
+                if (in_array($col['type'], ['date', 'time'], true)) {
+                    foreach ($this->defaults as &$row) {
+                        $row[$colId] = DateTimeHelper::toIso8601($row[$colId]) ?: null;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -76,44 +82,150 @@ class Field extends \craft\base\Field
      */
     public function getContentColumnType(): string
     {
-        return Schema::TYPE_TEXT;
+        return $this->columnType;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        if (empty($this->columns)) {
+            $this->columns = [
+                'col1' => [
+                    'heading' => '',
+                    'handle' => '',
+                    'type' => 'singleline'
+                ]
+            ];
+        }
+
+        if ($this->defaults === null) {
+            $this->defaults = ['row1' => []];
+        }
+
+        $typeOptions = [
+            'checkbox' => Craft::t('app', 'Checkbox'),
+            'color' => Craft::t('app', 'Color'),
+            'date' => Craft::t('app', 'Date'),
+            'lightswitch' => Craft::t('app', 'Lightswitch'),
+            'multiline' => Craft::t('app', 'Multi-line text'),
+            'number' => Craft::t('app', 'Number'),
+            'singleline' => Craft::t('app', 'Single-line text'),
+            'time' => Craft::t('app', 'Time'),
+        ];
+
+        // Make sure they are sorted alphabetically (post-translation)
+        asort($typeOptions);
+
+        $columnSettings = [
+            'heading' => [
+                'heading' => Craft::t('app', 'Column Heading'),
+                'type' => 'singleline',
+                'autopopulate' => 'handle'
+            ],
+            'handle' => [
+                'heading' => Craft::t('app', 'Handle'),
+                'code' => true,
+                'type' => 'singleline'
+            ],
+            'width' => [
+                'heading' => Craft::t('app', 'Width'),
+                'code' => true,
+                'type' => 'singleline',
+                'width' => 50
+            ],
+            'type' => [
+                'heading' => Craft::t('app', 'Type'),
+                'class' => 'thin',
+                'type' => 'select',
+                'options' => $typeOptions,
+            ],
+        ];
+
+        $view = Craft::$app->getView();
+
+        $view->registerAssetBundle(TimepickerAsset::class);
+        $view->registerAssetBundle(TableSettingsAsset::class);
+        $view->registerJs('new Craft.TableFieldSettings('.
+            Json::encode($view->namespaceInputName('columns'), JSON_UNESCAPED_UNICODE).', '.
+            Json::encode($view->namespaceInputName('defaults'), JSON_UNESCAPED_UNICODE).', '.
+            Json::encode($this->columns, JSON_UNESCAPED_UNICODE).', '.
+            Json::encode($this->defaults, JSON_UNESCAPED_UNICODE).', '.
+            Json::encode($columnSettings, JSON_UNESCAPED_UNICODE).
+            ');');
+
+        $columnsField = $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
+            [
+                'label' => Craft::t('app', 'Table Columns'),
+                'instructions' => Craft::t('app', 'Define the columns your table should have.'),
+                'id' => 'columns',
+                'name' => 'columns',
+                'cols' => $columnSettings,
+                'rows' => $this->columns,
+                'addRowLabel' => Craft::t('app', 'Add a column'),
+                'initJs' => false
+            ]
+        ]);
+
+
+        return $view->renderTemplate('store-hours/input', [
+            'field' => $this,
+            'columnsField' => $columnsField,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        Craft::$app->getView()->registerAssetBundle(TimepickerAsset::class);
+
+        $input = '<input type="hidden" name="'.$this->handle.'" value="">';
+
+        $tableHtml = $this->_getInputHtml($value, $element, false, true);
+
+        if ($tableHtml) {
+            $input .= $tableHtml;
+        }
+
+        return $input;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getElementValidationRules(): array
+    {
+        return ['validateTableData'];
+    }
+
+    /**
+     * Validates the table data.
+     *
+     * @param ElementInterface $element
+     */
+    public function validateTableData(ElementInterface $element)
+    {
+        /** @var Element $element */
+        $value = $element->getFieldValue($this->handle);
+
+        if (!empty($value) && !empty($this->columns)) {
+            foreach ($value as $row) {
+                foreach ($this->columns as $colId => $col) {
+                    if (!$this->_validateCellValue($col['type'], $row[$colId], $error)) {
+                        $element->addError($this->handle, $error);
+                    }
+                }
+            }
+        }
     }
 
     /**
      * @inheritdoc
      */
     public function normalizeValue($value, ElementInterface $element = null)
-    {
-        if (is_string($value)) {
-            $value = Json::decode($value);
-        }
-
-        $normalized = [];
-
-        if (!is_array($value) || empty($this->columnHeadings)) {
-            return null;
-        }
-
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($this->slots as $slot) {
-                if (
-                    isset($value[$day][$slot['handle']]) &&
-                    ($date = DateTimeHelper::toDateTime($value[$day][$slot['handle']])) !== false
-                ) {
-                    $normalized[$day][$slot['handle']] = $date;
-                } else {
-                    $normalized[$day][$slot['handle']] = null;
-                }
-            }
-        }
-
-        return $normalized;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function normalizeValueEX($value, ElementInterface $element = null)
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decode($value);
@@ -143,17 +255,18 @@ class Field extends \craft\base\Field
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
+        if (!is_array($value) || empty($this->columns)) {
+            return null;
+        }
+
         $serialized = [];
 
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($this->slots as $slot) {
-                $timeValue = $value[$day][$slot['handle']];
-                if ($timeValue instanceof \DateTime) {
-                    $serialized[$day][$slot['handle']] = $timeValue->format(\DateTime::ATOM);
-                } else {
-                    $serialized[$day][$slot['handle']] = null;
-                }
+        foreach ($value as $row) {
+            $serializedRow = [];
+            foreach (array_keys($this->columns) as $colId) {
+                $serializedRow[$colId] = parent::serializeValue($row[$colId] ?? null);
             }
+            $serialized[] = $serializedRow;
         }
 
         return $serialized;
@@ -162,83 +275,89 @@ class Field extends \craft\base\Field
     /**
      * @inheritdoc
      */
-    public function getSearchKeywords($value, ElementInterface $element): string
+    public function getStaticHtml($value, ElementInterface $element): string
     {
-        return '';
+        return $this->_getInputHtml($value, $element, false,true);
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * Normalizes a cell’s value.
+     *
+     * @param string $type  The cell type
+     * @param mixed  $value The cell value
+     *
+     * @return mixed
+     * @see normalizeValue()
+     */
+    private function _normalizeCellValue(string $type, $value)
+    {
+        switch ($type) {
+            case 'color':
+                if ($value instanceof ColorData) {
+                    return $value;
+                }
+
+                if (!$value || $value === '#') {
+                    return null;
+                }
+
+                $value = strtolower($value);
+
+                if ($value[0] !== '#') {
+                    $value = '#'.$value;
+                }
+
+                if (strlen($value) === 4) {
+                    $value = '#'.$value[1].$value[1].$value[2].$value[2].$value[3].$value[3];
+                }
+
+                return new ColorData($value);
+
+            case 'date':
+            case 'time':
+                return DateTimeHelper::toDateTime($value) ?: null;
+        }
+
+        return $value;
     }
 
     /**
-     * @inheritdoc
+     * Validates a cell’s value.
+     *
+     * @param string      $type   The cell type
+     * @param mixed       $value  The cell value
+     * @param string|null &$error The error text to set on the element
+     *
+     * @return bool Whether the value is valid
+     * @see normalizeValue()
      */
-    public function getSettingsHtml()
+    private function _validateCellValue(string $type, $value, string &$error = null): bool
     {
-        $columns = $this->columns;
-        $slots = $this->slots;
-
-
-        if (empty($columns)) {
-            $columns = [
-                'label' => [
-                    'heading' => 'Label',
-                    'handle' => 'label',
-                    'type' => 'singleline',
-                    'autopopulate' => 'handle'
-                ],
-                'handle' => [
-                    'heading' => 'Handle',
-                    'handle' => 'handle',
-                    'type' => 'singleline'
-                ]
-            ];
+        if ($type === 'color' && $value !== null) {
+            /** @var ColorData $value */
+            $validator = new ColorValidator();
+            $validator->message = str_replace('{attribute}', '{value}', $validator->message);
+            $hex = $value->getHex();
+            return $validator->validate($hex, $error);
         }
 
-
-        return Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField', [
-            [
-                'label' => Craft::t('app', 'Time Slots'),
-                'instructions' => Craft::t('app', 'Add custom time slots.'),
-                'id' => 'slots',
-                'name' => 'slots',
-                'cols' => $columns,
-                'rows' => $slots,
-                'addRowLabel' => Craft::t('app', 'Add a column'),
-                'initJs' => true
-            ]
-        ]);
+        return true;
     }
 
     /**
-     * @inheritdoc
+     * Returns the field's input HTML.
+     *
+     * @param mixed                 $value
+     * @param ElementInterface|null $element
+     * @param bool                  $static
+     *
+     * @return string|null
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    private function _getInputHtml($value, ElementInterface $element = null, bool $static, bool $staticRows)
     {
-        $slots = $this->slots;
-
-        $typeOptions = [
-            'singleline' => Craft::t('app', 'Single-line text'),
-            'time' => Craft::t('app', 'Time'),
-            'color' => Craft::t('app', 'Color'),
-        ];
-
-        foreach ($slots as $slot) {
-            $slotLabels[] = [
-                $slot['label'] => [
-                    'heading' => Craft::t('app', $slot['label']),
-                    'type' => 'time',
-                ],
-            ];
-        }
-
-        $columnHeadings = array_map(function($a) {return array_pop($a);}, $slotLabels);
-
-        $slotLabels = [
-            'heading' => [
-                'heading' => Craft::t('app', '' ),
-                'type' => 'heading',
-            ],
-        ];
-
-        array_unshift($columnHeadings, $slotLabels['heading']);
 
         $startDay = Craft::$app->getUser()->getIdentity()->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay;
 
@@ -258,32 +377,47 @@ class Field extends \craft\base\Field
             $rowHeadings = array_map(function($a) {return array_pop($a);}, $weekDays);
         }
 
-        return Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'editableTableField', [
-            [
-                'instructions' => Craft::t('app', 'Add Store Hours.'),
-                'id' => 'slots',
-                'name' => 'slots',
-                'cols' => $columnHeadings,
-                'rows' => $rowHeadings,
-                'initJs' => false,
-                'staticRows' => true
-            ]
-        ]);
-    }
+        /** @var Element $element */
+        if (empty($this->columns)) {
+            return null;
+        }
 
-    /**
-     * @inheritdoc
-     */
-    public function isEmpty($value): bool
-    {
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($this->slots as $slot) {
-                if (isset($value[$day][$slot])) {
-                    return false;
+        // Translate the column headings
+        foreach ($this->columns as &$column) {
+            if (!empty($column['heading'])) {
+                $column['heading'] = Craft::t('site', $column['heading']);
+            }
+        }
+        unset($column);
+
+        // Explicitly set each cell value to an array with a 'value' key
+        $checkForErrors = $element && $element->hasErrors($this->handle);
+        if (is_array($value)) {
+            foreach ($value as &$row) {
+                foreach ($this->columns as $colId => $col) {
+                    if (isset($row[$colId])) {
+                        $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
+                        $row[$colId] = [
+                            'value' => $row[$colId],
+                            'heading' => Craft::t('app', Craft::$app->getLocale()->getWeekDayName($day)),
+                            'hasErrors' => $hasErrors,
+                        ];
+                    }
                 }
             }
         }
+        unset($row);
 
-        return true;
+        $view = Craft::$app->getView();
+        $id = $view->formatInputId($this->handle);
+
+        return $view->renderTemplate('_includes/forms/editableTable', [
+            'id' => $id,
+            'name' => $this->handle,
+            'cols' => $this->columns,
+            'rows' => $value,
+            'staticRows' => true,
+            'static' => $static,
+        ]);
     }
 }
