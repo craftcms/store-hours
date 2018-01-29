@@ -95,7 +95,7 @@ class Field extends craft\base\Field
                 'col1' => [
                     'heading' => '',
                     'handle' => '',
-                    'type' => 'singleline'
+                    'type' => 'time'
                 ]
             ];
         }
@@ -105,13 +105,6 @@ class Field extends craft\base\Field
         }
 
         $typeOptions = [
-            'checkbox' => Craft::t('app', 'Checkbox'),
-            'color' => Craft::t('app', 'Color'),
-            'date' => Craft::t('app', 'Date'),
-            'lightswitch' => Craft::t('app', 'Lightswitch'),
-            'multiline' => Craft::t('app', 'Multi-line text'),
-            'number' => Craft::t('app', 'Number'),
-            'singleline' => Craft::t('app', 'Single-line text'),
             'time' => Craft::t('app', 'Time'),
         ];
 
@@ -167,12 +160,23 @@ class Field extends craft\base\Field
                 'initJs' => false
             ]
         ]);
+        $defaultsField = $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
+            [
+                'label' => Craft::t('app', 'Default Values'),
+                'instructions' => Craft::t('app', 'Define the default values for the field.'),
+                'id' => 'defaults',
+                'name' => 'defaults',
+                'cols' => $this->columns,
+                'rows' => $this->defaults,
+                'initJs' => false
+            ]
+        ]);
 
 
         return $view->renderTemplate('store-hours/input', [
             'field' => $this,
             'columnsField' => $columnsField,
-        ]);
+            'defaultsField'=> $defaultsField]);
     }
 
     /**
@@ -193,34 +197,6 @@ class Field extends craft\base\Field
         return $input;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getElementValidationRules(): array
-    {
-        return ['validateTableData'];
-    }
-
-    /**
-     * Validates the table data.
-     *
-     * @param ElementInterface $element
-     */
-    public function validateTableData(ElementInterface $element)
-    {
-        /** @var Element $element */
-        $value = $element->getFieldValue($this->handle);
-
-        if (!empty($value) && !empty($this->columns)) {
-            foreach ($value as $row) {
-                foreach ($this->columns as $colId => $col) {
-                    if (!$this->_validateCellValue($col['type'], $row[$colId], $error)) {
-                        $element->addError($this->handle, $error);
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * @inheritdoc
@@ -294,57 +270,7 @@ class Field extends craft\base\Field
      */
     private function _normalizeCellValue(string $type, $value)
     {
-        switch ($type) {
-            case 'color':
-                if ($value instanceof ColorData) {
-                    return $value;
-                }
-
-                if (!$value || $value === '#') {
-                    return null;
-                }
-
-                $value = strtolower($value);
-
-                if ($value[0] !== '#') {
-                    $value = '#'.$value;
-                }
-
-                if (strlen($value) === 4) {
-                    $value = '#'.$value[1].$value[1].$value[2].$value[2].$value[3].$value[3];
-                }
-
-                return new ColorData($value);
-
-            case 'date':
-            case 'time':
-                return DateTimeHelper::toDateTime($value) ?: null;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Validates a cell’s value.
-     *
-     * @param string      $type   The cell type
-     * @param mixed       $value  The cell value
-     * @param string|null &$error The error text to set on the element
-     *
-     * @return bool Whether the value is valid
-     * @see normalizeValue()
-     */
-    private function _validateCellValue(string $type, $value, string &$error = null): bool
-    {
-        if ($type === 'color' && $value !== null) {
-            /** @var ColorData $value */
-            $validator = new ColorValidator();
-            $validator->message = str_replace('{attribute}', '{value}', $validator->message);
-            $hex = $value->getHex();
-            return $validator->validate($hex, $error);
-        }
-
-        return true;
+        return DateTimeHelper::toDateTime($value) ?: null;
     }
 
     /**
@@ -358,7 +284,6 @@ class Field extends craft\base\Field
      */
     private function _getInputHtml($value, ElementInterface $element = null, bool $static, bool $staticRows)
     {
-
         $startDay = Craft::$app->getUser()->getIdentity()->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay;
 
         $days = range($startDay, 6, 1);
@@ -389,6 +314,14 @@ class Field extends craft\base\Field
             }
         }
         unset($column);
+        $dayLabels = [
+            'heading' => [
+                'heading' => Craft::t('app', '' ),
+                'type' => 'heading',
+            ],
+        ];
+
+        array_unshift($this->columns, $dayLabels['heading']);
 
         // Explicitly set each cell value to an array with a 'value' key
         $checkForErrors = $element && $element->hasErrors($this->handle);
@@ -399,7 +332,6 @@ class Field extends craft\base\Field
                         $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
                         $row[$colId] = [
                             'value' => $row[$colId],
-                            'heading' => Craft::t('app', Craft::$app->getLocale()->getWeekDayName($day)),
                             'hasErrors' => $hasErrors,
                         ];
                     }
