@@ -14,7 +14,6 @@ use craft\fields\data\ColorData;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\validators\ColorValidator;
-use craft\web\assets\tablesettings\TableSettingsAsset;
 use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
@@ -46,7 +45,7 @@ class Field extends craft\base\Field
     public $columns;
 
     /**
-     * @var array|null The rows that should be shown in the table
+     * @var array|null The days of the week that should be shown as row headings in the table
      */
     public $rowHeadings;
 
@@ -65,6 +64,7 @@ class Field extends craft\base\Field
     {
         parent::init();
 
+        // Create default time slots
         if (empty($this->columns)) {
             $this->columns = [
                 'Opening Time' => [
@@ -94,7 +94,6 @@ class Field extends craft\base\Field
      */
     public function getSettingsHtml()
     {
-
         $typeOptions = [
             'time' => Craft::t('app', 'Time'),
         ];
@@ -126,14 +125,6 @@ class Field extends craft\base\Field
 
         $view = Craft::$app->getView();
 
-        $view->registerAssetBundle(TimepickerAsset::class);
-        $view->registerAssetBundle(TableSettingsAsset::class);
-        $view->registerJs('new Craft.TableFieldSettings('.
-            Json::encode($view->namespaceInputName('columns'), JSON_UNESCAPED_UNICODE).', '.
-            Json::encode($this->columns, JSON_UNESCAPED_UNICODE).', '.
-            Json::encode($columnSettings, JSON_UNESCAPED_UNICODE).
-            ');');
-
         $columnsField = $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
             [
                 'label' => Craft::t('app', 'Time Slots'),
@@ -143,10 +134,9 @@ class Field extends craft\base\Field
                 'cols' => $columnSettings,
                 'rows' => $this->columns,
                 'addRowLabel' => Craft::t('app', 'Add a column'),
-                'initJs' => false
+                'initJs' => true
             ]
         ]);
-
 
         return $view->renderTemplate('store-hours/settings', [
             'field' => $this,
@@ -210,15 +200,6 @@ class Field extends craft\base\Field
             $value = Json::decodeIfJson($value);
         } else if ($value === null && $this->isFresh($element) && is_array($this->columns)) {
             $value = [];
-            for ($day = 0; $day <= 6; $day++) {
-                // Normalize the values and make them accessible from both the col IDs and the handles
-                foreach ($this->columns as $colId => $col) {
-                    $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
-                    if ($col['handle']) {
-                        $value[$day][$col['handle']] = $value[$day][$colId];
-                    }
-                }
-            }
         }
 
         if (!is_array($value) || empty($this->columns)) {
@@ -306,6 +287,7 @@ class Field extends craft\base\Field
             $validator = new ColorValidator();
             $validator->message = str_replace('{attribute}', '{value}', $validator->message);
             $hex = $value->getHex();
+
             return $validator->validate($hex, $error);
         }
 
@@ -346,7 +328,7 @@ class Field extends craft\base\Field
                 // Add the day heading
                 $row['heading'] = $this->rowHeadings[$day]['heading'];
                 foreach ($this->columns as $colId => $col) {
-                    if (isset($row[$colId])) {
+                    if ($row[$colId] !== null) {
                         $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
                         $row[$colId] = [
                             'value' => $row[$colId],
@@ -372,13 +354,16 @@ class Field extends craft\base\Field
     }
 
     /**
-     * Returns an array of weekday names starting on the user's defaultWeekStartDay.
+     * Returns an array of weekday headings starting on the user's defaultWeekStartDay.
      *
      * @return array|null
      */
     private function _getWeekDayHeadings(): array
     {
-        $startDay = Craft::$app->getUser()->getIdentity()->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay;
+        $userIdentity = Craft::$app->getUser()->getIdentity();
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+
+        $startDay = $userIdentity->getPreference('weekStartDay') ?? $generalConfig->defaultWeekStartDay;
 
         $days = range($startDay, 6, 1);
         if ($startDay != 0) {
@@ -395,16 +380,12 @@ class Field extends craft\base\Field
         }
         unset($days);
 
-        if (isset($weekDays)) {
+        if ($weekDays) {
             $weekDayHeadings = array_map(function($a) {
                 return array_pop($a);
             }, $weekDays);
         }
 
-        if (isset($weekDayHeadings)) {
-            return $weekDayHeadings;
-        }
-
-        return null;
+        return $weekDayHeadings;
     }
 }
