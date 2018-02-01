@@ -48,12 +48,7 @@ class Field extends craft\base\Field
     /**
      * @var array|null The rows that should be shown in the table
      */
-    public $rows;
-
-    /**
-     * @var array The default row values that new elements should have
-     */
-    public $defaults;
+    public $rowHeadings;
 
     /**
      * @var string The type of database column the field should have in the content table
@@ -70,15 +65,19 @@ class Field extends craft\base\Field
     {
         parent::init();
 
-        // Convert default date cell values to ISO8601 strings
-        if (!empty($this->columns) && $this->defaults !== null) {
-            foreach ($this->columns as $colId => $col) {
-                if (in_array($col['type'], ['date', 'time'], true)) {
-                    foreach ($this->defaults as &$row) {
-                        $row[$colId] = DateTimeHelper::toIso8601($row[$colId]) ?: null;
-                    }
-                }
-            }
+        if (empty($this->columns)) {
+            $this->columns = [
+                'Opening Time' => [
+                    'heading' => Craft::t('app', 'Opening Time'),
+                    'handle' => Craft::t('app', 'openingTime'),
+                    'type' => 'time'
+                ],
+                'Closing Time' => [
+                    'heading' => Craft::t('app', 'Closing Time'),
+                    'handle' => Craft::t('app', 'closeingTime'),
+                    'type' => 'time'
+                ]
+            ];
         }
     }
 
@@ -95,26 +94,10 @@ class Field extends craft\base\Field
      */
     public function getSettingsHtml()
     {
-        if (empty($this->columns)) {
-            $this->columns = [
-                'col1' => [
-                    'heading' => '',
-                    'handle' => '',
-                    'type' => 'singleline'
-                ]
-            ];
-        }
-
-        if ($this->defaults === null) {
-            $this->defaults = ['row1' => []];
-        }
 
         $typeOptions = [
             'time' => Craft::t('app', 'Time'),
         ];
-
-        // Make sure they are sorted alphabetically (post-translation)
-        asort($typeOptions);
 
         $columnSettings = [
             'heading' => [
@@ -147,9 +130,7 @@ class Field extends craft\base\Field
         $view->registerAssetBundle(TableSettingsAsset::class);
         $view->registerJs('new Craft.TableFieldSettings('.
             Json::encode($view->namespaceInputName('columns'), JSON_UNESCAPED_UNICODE).', '.
-            Json::encode($view->namespaceInputName('defaults'), JSON_UNESCAPED_UNICODE).', '.
             Json::encode($this->columns, JSON_UNESCAPED_UNICODE).', '.
-            Json::encode($this->defaults, JSON_UNESCAPED_UNICODE).', '.
             Json::encode($columnSettings, JSON_UNESCAPED_UNICODE).
             ');');
 
@@ -167,7 +148,7 @@ class Field extends craft\base\Field
         ]);
 
 
-        return $view->renderTemplate('store-hours/input', [
+        return $view->renderTemplate('store-hours/settings', [
             'field' => $this,
             'columnsField' => $columnsField,
         ]);
@@ -182,7 +163,7 @@ class Field extends craft\base\Field
 
         $input = '<input type="hidden" name="'.$this->handle.'" value="">';
 
-        $tableHtml = $this->_getInputHtml($value, $element);
+        $tableHtml = $this->_getInputHtml($value, $element, false);
 
         if ($tableHtml) {
             $input .= $tableHtml;
@@ -226,21 +207,30 @@ class Field extends craft\base\Field
     public function normalizeValue($value, ElementInterface $element = null)
     {
         if (is_string($value) && !empty($value)) {
-            $value = Json::decode($value);
-        } else if ($value === null && $this->isFresh($element) && is_array($this->defaults)) {
-            $value = array_values($this->defaults);
+            $value = Json::decodeIfJson($value);
+        } else if ($value === null && $this->isFresh($element) && is_array($this->columns)) {
+            $value = [];
+            for ($day = 0; $day <= 6; $day++) {
+                // Normalize the values and make them accessible from both the col IDs and the handles
+                foreach ($this->columns as $colId => $col) {
+                    $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
+                    if ($col['handle']) {
+                        $value[$day][$col['handle']] = $value[$day][$colId];
+                    }
+                }
+            }
         }
 
         if (!is_array($value) || empty($this->columns)) {
             return null;
         }
 
-        // Normalize the values and make them accessible from both the col IDs and the handles
-        foreach ($value as &$row) {
+        for ($day = 0; $day <= 6; $day++) {
+            // Normalize the values and make them accessible from both the col IDs and the handles
             foreach ($this->columns as $colId => $col) {
-                $row[$colId] = $this->_normalizeCellValue($col['type'], $row[$colId] ?? null);
+                $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
                 if ($col['handle']) {
-                    $row[$col['handle']] = $row[$colId];
+                    $value[$day][$col['handle']] = $value[$day][$colId];
                 }
             }
         }
@@ -275,7 +265,7 @@ class Field extends craft\base\Field
      */
     public function getStaticHtml($value, ElementInterface $element): string
     {
-        return $this->_getInputHtml($value, $element);
+        return $this->_getInputHtml($value, $element, true);
     }
 
     // Private Methods
@@ -331,30 +321,30 @@ class Field extends craft\base\Field
      *
      * @return string|null
      */
-    private function _getInputHtml($value, ElementInterface $element = null)
+    private function _getInputHtml($value, ElementInterface $element = null, bool $static): ?string
     {
-        if ($this->rows === null) {
-            $this->rows = $this->getWeekDayHeadings();
+        if ($this->rowHeadings === null) {
+            $this->rowHeadings = $this->_getWeekDayHeadings();
         }
 
         /** @var Element $element */
-        if (empty($this->columns) || empty($this->rows)) {
+        if (empty($this->columns) || empty($this->rowHeadings)) {
             return null;
         }
 
-        $weekDayColumn = [
+        $columns = array_merge([
             'heading' => [
                 'heading' => Craft::t('app', ''),
                 'type' => 'heading',
             ],
-        ];
-
-        unset($weekDayColumn);
+        ], $this->columns);
 
         // Explicitly set each cell value to an array with a 'value' key
         $checkForErrors = $element && $element->hasErrors($this->handle);
         if (is_array($value)) {
-            foreach ($value as &$row) {
+            foreach ($value as $day => &$row) {
+                // Add the day heading
+                $row['heading'] = $this->rowHeadings[$day]['heading'];
                 foreach ($this->columns as $colId => $col) {
                     if (isset($row[$colId])) {
                         $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
@@ -371,13 +361,13 @@ class Field extends craft\base\Field
         $view = Craft::$app->getView();
         $id = $view->formatInputId($this->handle);
 
-        return $view->renderTemplate('store-hours/output', [
+        return $view->renderTemplate('_includes/forms/editableTable', [
             'id' => $id,
             'name' => $this->handle,
-            'cols' => $this->columns,
+            'cols' => $columns,
             'rows' => $value,
-            'rowHeadings' => $this->rows,
-            'staticRows' => true,
+            'static' => $static,
+            'staticRows' => true
         ]);
     }
 
@@ -386,7 +376,7 @@ class Field extends craft\base\Field
      *
      * @return array|null
      */
-    private function getWeekDayHeadings(): array
+    private function _getWeekDayHeadings(): array
     {
         $startDay = Craft::$app->getUser()->getIdentity()->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay;
 
@@ -398,7 +388,7 @@ class Field extends craft\base\Field
         foreach ($days as $day) {
             $weekDays[] = [
                 'heading' => [
-                    'value' => Craft::t('app', Craft::$app->getLocale()->getWeekDayName($day)),
+                    'heading' => Craft::t('app', Craft::$app->getLocale()->getWeekDayName($day)),
                     'type' => 'heading',
                 ],
             ];
@@ -406,7 +396,9 @@ class Field extends craft\base\Field
         unset($days);
 
         if (isset($weekDays)) {
-            $weekDayHeadings = array_map(function($a) {return array_pop($a);}, $weekDays);
+            $weekDayHeadings = array_map(function($a) {
+                return array_pop($a);
+            }, $weekDays);
         }
 
         if (isset($weekDayHeadings)) {
