@@ -50,6 +50,11 @@ class Field extends craft\base\Field
     public $rowHeadings;
 
     /**
+     * @var array Default weekday order.
+     */
+    public $defaultWeekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    /**
      * @var string The type of database column the field should have in the content table
      */
     public $columnType = Schema::TYPE_TEXT;
@@ -305,11 +310,12 @@ class Field extends craft\base\Field
      */
     private function _getInputHtml($value, ElementInterface $element = null, bool $static): ?string
     {
+        /** @var array $value */
+        /** @var Element $element */
         if ($this->rowHeadings === null) {
             $this->rowHeadings = $this->_getWeekDayHeadings();
         }
 
-        /** @var Element $element */
         if (empty($this->columns) || empty($this->rowHeadings)) {
             return null;
         }
@@ -321,24 +327,36 @@ class Field extends craft\base\Field
             ],
         ], $this->columns);
 
-        // Explicitly set each cell value to an array with a 'value' key
+        // Build out the editable table rows, explicitly setting each cell value to an array with a 'value' key
+        $rows = [];
         $checkForErrors = $element && $element->hasErrors($this->handle);
-        if (is_array($value)) {
-            foreach ($value as $day => &$row) {
-                // Add the day heading
-                $row['heading'] = $this->rowHeadings[$day]['heading'];
-                foreach ($this->columns as $colId => $col) {
-                    if ($row[$colId] !== null) {
-                        $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
-                        $row[$colId] = [
-                            'value' => $row[$colId],
-                            'hasErrors' => $hasErrors,
-                        ];
-                    }
+        foreach ($value as $day => $row) {
+            // Add the day heading
+            $row['heading'] = $this->defaultWeekDays[$day];
+            foreach ($this->columns as $colId => $col) {
+                if ($row[$colId] !== null) {
+                    $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
+                    $row[$colId] = [
+                        'value' => $row[$colId],
+                        'hasErrors' => $hasErrors,
+                    ];
                 }
             }
+            $rows[(string)$day] = $row;
         }
-        unset($row);
+
+        if ($rows['0']['heading'] != $this->rowHeadings[0]['heading']) {
+            foreach ($this->rowHeadings as $day => $row) {
+                if ($row['heading'] == 'Sunday') {
+                    $sundayIndex = $day;
+                }
+            }
+
+            /** @var int $sundayIndex */
+            $startDays = array_slice($rows, 7 - $sundayIndex, $sundayIndex, true);
+            $endDays = array_slice($rows, 0, 7 - $sundayIndex, true);
+            $rows = $startDays + $endDays;
+        }
 
         $view = Craft::$app->getView();
         $id = $view->formatInputId($this->handle);
@@ -347,7 +365,7 @@ class Field extends craft\base\Field
             'id' => $id,
             'name' => $this->handle,
             'cols' => $columns,
-            'rows' => $value,
+            'rows' => $rows,
             'static' => $static,
             'staticRows' => true
         ]);
@@ -378,8 +396,9 @@ class Field extends craft\base\Field
                 ],
             ];
         }
-        unset($days);
 
+        /** @var array $weekDays */
+        /** @var array $weekDayHeadings */
         if ($weekDays) {
             $weekDayHeadings = array_map(function($a) {
                 return array_pop($a);
