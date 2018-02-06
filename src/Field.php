@@ -211,6 +211,8 @@ class Field extends craft\base\Field
             return null;
         }
 
+        ksort($value);
+
         for ($day = 0; $day <= 6; $day++) {
             // Normalize the values and make them accessible from both the col IDs and the handles
             foreach ($this->columns as $colId => $col) {
@@ -221,7 +223,7 @@ class Field extends craft\base\Field
             }
         }
 
-        return $value;
+        return array_values($value);
     }
 
     /**
@@ -353,9 +355,9 @@ class Field extends craft\base\Field
             }
 
             /** @var int $sundayIndex */
-            $startDays = array_slice($rows, 7 - $sundayIndex, $sundayIndex, true);
-            $endDays = array_slice($rows, 0, 7 - $sundayIndex, true);
-            $rows = $startDays + $endDays;
+            $first = array_slice($rows, 7 - $sundayIndex, $sundayIndex, true);
+            $second = array_slice($rows, 0, 7 - $sundayIndex, true);
+            $rows = $first + $second;
         }
 
         $view = Craft::$app->getView();
