@@ -216,6 +216,11 @@ class Field extends craft\base\Field
         for ($day = 0; $day <= 6; $day++) {
             // Normalize the values and make them accessible from both the col IDs and the handles
             foreach ($this->columns as $colId => $col) {
+                // just in case the data is from an older version
+                if (isset($value[$day][$col['handle']])) {
+                    $value[$day][$colId] = $value[$day][$col['handle']];
+                    unset($value[$day][$col['handle']]);
+                }
                 $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
                 if ($col['handle']) {
                     $value[$day][$col['handle']] = $value[$day][$colId];
