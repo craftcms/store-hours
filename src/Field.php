@@ -10,10 +10,8 @@ namespace craft\storehours;
 use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
-use craft\fields\data\ColorData;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use craft\validators\ColorValidator;
 use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
@@ -170,36 +168,7 @@ class Field extends craft\base\Field
     /**
      * @inheritdoc
      */
-    public function getElementValidationRules(): array
-    {
-        return ['validateTableData'];
-    }
-
-    /**
-     * Validates the table data.
-     *
-     * @param ElementInterface $element
-     */
-    public function validateTableData(ElementInterface $element)
-    {
-        /** @var Element $element */
-        $value = $element->getFieldValue($this->handle);
-
-        if (!empty($value) && !empty($this->columns)) {
-            foreach ($value as $row) {
-                foreach ($this->columns as $colId => $col) {
-                    if (!$this->_validateCellValue($col['type'], $row[$colId], $error)) {
-                        $element->addError($this->handle, $error);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue($value, ElementInterface $element = null): array
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
@@ -216,7 +185,7 @@ class Field extends craft\base\Field
         for ($day = 0; $day <= 6; $day++) {
             // Normalize the values and make them accessible from both the col IDs and the handles
             foreach ($this->columns as $colId => $col) {
-                // just in case the data is from an older version
+                // Just in case the data is from an older version
                 if (isset($value[$day][$col['handle']])) {
                     $value[$day][$colId] = $value[$day][$col['handle']];
                     unset($value[$day][$col['handle']]);
@@ -234,7 +203,7 @@ class Field extends craft\base\Field
     /**
      * @inheritdoc
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue($value, ElementInterface $element = null): array
     {
         if (!is_array($value) || empty($this->columns)) {
             return null;
@@ -275,35 +244,11 @@ class Field extends craft\base\Field
      */
     private function _normalizeCellValue(string $type, $value)
     {
-        if ($type == 'time') {
+        if ($type === 'time') {
             return DateTimeHelper::toDateTime($value) ?: null;
         }
 
         return $value;
-    }
-
-    /**
-     * Validates a cell’s value.
-     *
-     * @param string      $type   The cell type
-     * @param mixed       $value  The cell value
-     * @param string|null &$error The error text to set on the element
-     *
-     * @return bool Whether the value is valid
-     * @see normalizeValue()
-     */
-    private function _validateCellValue(string $type, $value, string &$error = null): bool
-    {
-        if ($type === 'color' && $value !== null) {
-            /** @var ColorData $value */
-            $validator = new ColorValidator();
-            $validator->message = str_replace('{attribute}', '{value}', $validator->message);
-            $hex = $value->getHex();
-
-            return $validator->validate($hex, $error);
-        }
-
-        return true;
     }
 
     /**
@@ -312,6 +257,8 @@ class Field extends craft\base\Field
      * @param mixed                 $value
      * @param ElementInterface|null $element
      * @param bool                  $static
+     *
+     * @var int                     $sundayIndex
      *
      * @return string|null
      */
@@ -336,25 +283,23 @@ class Field extends craft\base\Field
 
         // Build out the editable table rows, explicitly setting each cell value to an array with a 'value' key
         $rows = [];
-        $checkForErrors = $element && $element->hasErrors($this->handle);
         foreach ($value as $day => $row) {
             // Add the day heading
             $row['heading'] = $this->defaultWeekDays[$day];
             foreach ($this->columns as $colId => $col) {
-                if ($row[$colId] !== null) {
-                    $hasErrors = $checkForErrors && !$this->_validateCellValue($col['type'], $row[$colId]);
+                if (isset($row[$colId])) {
                     $row[$colId] = [
-                        'value' => $row[$colId],
-                        'hasErrors' => $hasErrors,
+                        'value' => $row[$colId]
                     ];
                 }
             }
             $rows[(string)$day] = $row;
         }
 
+        // Build the table according to user's defaultWeekStartDay preference
         if ($rows['0']['heading'] != $this->rowHeadings[0]['heading']) {
             foreach ($this->rowHeadings as $day => $row) {
-                if ($row['heading'] == 'Sunday') {
+                if ($row['heading'] === 'Sunday') {
                     $sundayIndex = $day;
                 }
             }
@@ -381,7 +326,10 @@ class Field extends craft\base\Field
     /**
      * Returns an array of weekday headings starting on the user's defaultWeekStartDay.
      *
-     * @return array|null
+     * @var array $weekDays
+     * @var array $weekDayHeadings
+     *
+     * @return array
      */
     private function _getWeekDayHeadings(): array
     {
