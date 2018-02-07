@@ -74,12 +74,12 @@ class Field extends craft\base\Field
             $this->columns = [
                 'Opening Time' => [
                     'heading' => Craft::t('app', 'Opening Time'),
-                    'handle' => Craft::t('app', 'openingTime'),
+                    'handle' => Craft::t('app', 'open'),
                     'type' => 'time'
                 ],
                 'Closing Time' => [
                     'heading' => Craft::t('app', 'Closing Time'),
-                    'handle' => Craft::t('app', 'closeingTime'),
+                    'handle' => Craft::t('app', 'close'),
                     'type' => 'time'
                 ]
             ];
