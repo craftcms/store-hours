@@ -7,7 +7,6 @@
 
 namespace craft\storehours\migrations;
 
-use Craft;
 use craft\db\Migration;
 use craft\storehours\Field;
 

@@ -8,7 +8,6 @@
 namespace craft\storehours;
 
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -18,7 +17,6 @@ use yii\db\Schema;
  * Store Hours field type
  *
  * @property string $contentColumnType
- *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since  2.0
  */
