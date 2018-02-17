@@ -236,9 +236,8 @@ class Field extends craft\base\Field
     /**
      * Normalizes a cell’s value.
      *
-     * @param string $type  The cell type
-     * @param mixed  $value The cell value
-     *
+     * @param string $type The cell type
+     * @param mixed $value The cell value
      * @return mixed
      * @see normalizeValue()
      */
@@ -254,12 +253,10 @@ class Field extends craft\base\Field
     /**
      * Returns the field's input HTML.
      *
-     * @param mixed                 $value
+     * @param mixed $value
      * @param ElementInterface|null $element
-     * @param bool                  $static
-     *
-     * @var int                     $sundayIndex
-     *
+     * @param bool $static
+     * @var int $sundayIndex
      * @return string|null
      */
     private function _getInputHtml($value, ElementInterface $element = null, bool $static): ?string
@@ -328,7 +325,6 @@ class Field extends craft\base\Field
      *
      * @var array $weekDays
      * @var array $weekDayHeadings
-     *
      * @return array
      */
     private function _getWeekDayHeadings(): array
