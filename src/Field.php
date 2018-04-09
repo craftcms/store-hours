@@ -167,6 +167,7 @@ class Field extends craft\base\Field
 
     /**
      * @inheritdoc
+     * @return array|null
      */
     public function normalizeValue($value, ElementInterface $element = null): array
     {
