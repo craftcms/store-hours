@@ -167,21 +167,16 @@ class Field extends craft\base\Field
 
     /**
      * @inheritdoc
-     * @return array|null
+     * @return array
      */
     public function normalizeValue($value, ElementInterface $element = null): array
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
+            ksort($value);
         } else if ($value === null && $this->isFresh($element) && is_array($this->columns)) {
             $value = [];
         }
-
-        if (!is_array($value) || empty($this->columns)) {
-            return null;
-        }
-
-        ksort($value);
 
         for ($day = 0; $day <= 6; $day++) {
             // Normalize the values and make them accessible from both the col IDs and the handles
@@ -204,7 +199,7 @@ class Field extends craft\base\Field
     /**
      * @inheritdoc
      */
-    public function serializeValue($value, ElementInterface $element = null): array
+    public function serializeValue($value, ElementInterface $element = null): ?array
     {
         if (!is_array($value) || empty($this->columns)) {
             return null;
