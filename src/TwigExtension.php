@@ -7,6 +7,10 @@
 
 namespace craft\storehours;
 
+use Craft;
+use craft\helpers\DateTimeHelper;
+
+
 /**
  * Hexdec Twig Extension
  */
@@ -35,13 +39,17 @@ class TwigExtension extends \Twig_Extension
     /**
      * @inheritdoc
      */
-    public function isOpenFilter($isOpen) :bool
+    public function isOpen($handleOne)
     {
-        $currentTime = date('Y/m/d H:i:s');
-        $open =
-
-
-
+        $field = new Field();
+        $test = $field->getDailyTimeSlots($handleOne);
+        $currentDateTime = DateTimeHelper::toDateTime(DateTimeHelper::currentTimeStamp());
+        $openTime = $test['open'];
+        $closeTime = $test['close'];
+        if($openTime < $currentDateTime and $currentDateTime < $closeTime) {
+            return 'Open';
+        }
+        return 'Closed';
     }
 
 

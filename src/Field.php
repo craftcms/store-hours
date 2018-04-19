@@ -226,6 +226,23 @@ class Field extends craft\base\Field
         return $this->_getInputHtml($value, $element, true);
     }
 
+
+    public function getDailyTimeSlots($value){
+        $currentDay = date('l');
+        $weekday = $this->_getWeekDayHeadings();
+
+        foreach ($weekday as $day => $key){
+            if(strcmp($currentDay,$key['heading']) == 0){
+                 $index = $day;
+                 break;
+            }
+            //error check if nothing matches
+        }
+
+       return $value[$index];
+
+    }
+
     // Private Methods
     // =========================================================================
 
@@ -351,7 +368,6 @@ class Field extends craft\base\Field
                 return array_pop($a);
             }, $weekDays);
         }
-
         return $weekDayHeadings;
     }
 }
