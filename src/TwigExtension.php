@@ -32,25 +32,48 @@ class TwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('isOpen', array($this, 'isOpen')),
+            new \Twig_SimpleFilter('isOpen', [$this, 'isOpen']),
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function isOpen($handleOne)
+    public function isOpen($value)
     {
         $field = new Field();
-        $test = $field->getDailyTimeSlots($handleOne);
+        $test = $field->getDailyTimeSlots($value);
         $currentDateTime = DateTimeHelper::toDateTime(DateTimeHelper::currentTimeStamp());
-        $openTime = $test['open'];
-        $closeTime = $test['close'];
-        if($openTime < $currentDateTime and $currentDateTime < $closeTime) {
-            return 'Open';
-        }
-        return 'Closed';
-    }
+        $openTimeOne = $test['open'];
+        $closeTimeOne = $test['lunchTimeOpen'];
+        $openTimeTwo = $test['lunchtimeclose'];
+        $closeTimeTwo = $test['close'];
+        $handle = [$openTimeOne, $closeTimeOne, $openTimeTwo, $closeTimeTwo];
 
+        $return = 'hello';
+        foreach ($handle as $key => $slot) {
+            $counter = 0;
+            $first = null;
+            $second = null;
+            if (($key % 2) == 0) {
+                $first = $slot;
+            }
+            if (($key % 2) != 0) {
+                $second = $slot;
+            }
+
+            if ($first == null or $second == null) {
+                break;
+            }
+            
+            // checks if the current time is within the first open-close range
+            if ($first < $currentDateTime and $currentDateTime < $second) {
+                return 'OPEN';
+                break;
+            }
+            return 'CLOSED';
+        }
+        return $return;
+    }
 
 }
