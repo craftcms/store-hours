@@ -57,6 +57,8 @@ class Field extends craft\base\Field
      */
     public $columnType = Schema::TYPE_TEXT;
 
+    public $handles = [];
+
     // Public Methods
     // =========================================================================
 
@@ -189,10 +191,11 @@ class Field extends craft\base\Field
                 $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
                 if ($col['handle']) {
                     $value[$day][$col['handle']] = $value[$day][$colId];
+                    $this->handles[$day][$col['handle']] = $value[$day][$colId];
                 }
             }
         }
-
+        $test = 1;
         return array_values($value);
     }
 
@@ -239,7 +242,8 @@ class Field extends craft\base\Field
             //error check if nothing matches
         }
 
-       return $value[$index];
+        $test = 1;
+       return $this->handles[$index];
 
     }
 

@@ -44,36 +44,36 @@ class TwigExtension extends \Twig_Extension
         $field = new Field();
         $test = $field->getDailyTimeSlots($value);
         $currentDateTime = DateTimeHelper::toDateTime(DateTimeHelper::currentTimeStamp());
-        $openTimeOne = $test['open'];
-        $closeTimeOne = $test['lunchTimeOpen'];
-        $openTimeTwo = $test['lunchtimeclose'];
-        $closeTimeTwo = $test['close'];
-        $handle = [$openTimeOne, $closeTimeOne, $openTimeTwo, $closeTimeTwo];
 
-        $return = 'hello';
-        foreach ($handle as $key => $slot) {
+        $counter = 0;
+        $first = null;
+        $second = null;
+
+        foreach ($test as $key => $slot) {
             $counter = 0;
-            $first = null;
-            $second = null;
+
             if (($key % 2) == 0) {
                 $first = $slot;
             }
             if (($key % 2) != 0) {
                 $second = $slot;
             }
-
-            if ($first == null or $second == null) {
-                break;
-            }
             
-            // checks if the current time is within the first open-close range
-            if ($first < $currentDateTime and $currentDateTime < $second) {
-                return 'OPEN';
-                break;
+            if ($first != null and $second != null) {
+                if ($first < $currentDateTime and $currentDateTime < $second) {
+                    $return = 'OPEN';
+                    $first = null;
+                    $second = null;
+                    break;
+                }
+                $first = null;
+                $second = null;
             }
-            return 'CLOSED';
+            // checks if the current time is within the first open-close range
+            $return = 'CLOSED';
+
         }
-        return $return;
+            return $return;
     }
 
 }
