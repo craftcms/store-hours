@@ -57,8 +57,6 @@ class Field extends craft\base\Field
      */
     public $columnType = Schema::TYPE_TEXT;
 
-    public $handles = [];
-
     // Public Methods
     // =========================================================================
 
@@ -191,11 +189,9 @@ class Field extends craft\base\Field
                 $value[$day][$colId] = $this->_normalizeCellValue($col['type'], $value[$day][$colId] ?? null);
                 if ($col['handle']) {
                     $value[$day][$col['handle']] = $value[$day][$colId];
-                    $this->handles[$day][$col['handle']] = $value[$day][$colId];
                 }
             }
         }
-        $test = 1;
         return array_values($value);
     }
 
@@ -229,22 +225,41 @@ class Field extends craft\base\Field
         return $this->_getInputHtml($value, $element, true);
     }
 
+    /**
+     * Returns an array of time slots for the current day of the week.
+     *
+     * @return array
+     */
+    public function getDailyTimeSlots($value): array
+    {
+        // The first half of value array holds time slot headings
+        $firstHalf = (count($value[0]) / 2);
 
-    public function getDailyTimeSlots($value){
+        /* @var array $handles */
+        $handles = $value;
+
+        // Unset time slot headings because we only care about handles
+        foreach ($handles as $day => $timeSlot) {
+            $count = 0;
+            foreach ($timeSlot as $slots => $slot) {
+                if ($count < $firstHalf) {
+                    unset($handles[$day][$slots]);
+                }
+                $count++;
+            }
+        }
+
         $currentDay = date('l');
         $weekday = $this->_getWeekDayHeadings();
 
-        foreach ($weekday as $day => $key){
-            if(strcmp($currentDay,$key['heading']) == 0){
-                 $index = $day;
-                 break;
+        foreach ($weekday as $day => $key) {
+            if (strcmp($currentDay, $key['heading']) == 0) {
+                $index = $day;
+                break;
             }
-            //error check if nothing matches
         }
 
-        $test = 1;
-       return $this->handles[$index];
-
+        return $handles[$index];
     }
 
     // Private Methods
