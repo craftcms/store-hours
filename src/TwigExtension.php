@@ -51,7 +51,6 @@ class TwigExtension extends \Twig_Extension
         $status = null;
 
         foreach ($timeSlots as $key => $slot) {
-            // Even slots (opening times)
             if (($key % 2) == 0 and $slot != null) {
                 if ($slot < $currentDateTime) {
                     $status = 'OPEN';
@@ -60,13 +59,16 @@ class TwigExtension extends \Twig_Extension
                 }
             }
 
-            // Odd slots (closing times)
             if (($key % 2) != 0 and $slot != null) {
                 if ($slot < $currentDateTime) {
                     $status = 'CLOSED';
                 } else {
                     $status = 'OPEN';
                 }
+            }
+
+            if ($slot == null and $status == null) {
+                $status = 'CLOSED';
             }
         }
         return $status;
