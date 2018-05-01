@@ -56,6 +56,7 @@ class TwigExtension extends \Twig_Extension
                     $status = 'OPEN';
                 } else {
                     $status = 'CLOSED';
+                    break;
                 }
             }
 
@@ -64,6 +65,7 @@ class TwigExtension extends \Twig_Extension
                     $status = 'CLOSED';
                 } else {
                     $status = 'OPEN';
+                    break;
                 }
             }
 
