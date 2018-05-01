@@ -53,24 +53,24 @@ class TwigExtension extends \Twig_Extension
         foreach ($timeSlots as $key => $slot) {
             if (($key % 2) == 0 and $slot != null) {
                 if ($slot < $currentDateTime) {
-                    $status = 'OPEN';
+                    $status = true;
                 } else {
-                    $status = 'CLOSED';
+                    $status = false;
                     break;
                 }
             }
 
             if (($key % 2) != 0 and $slot != null) {
                 if ($slot < $currentDateTime) {
-                    $status = 'CLOSED';
+                    $status = false;
                 } else {
-                    $status = 'OPEN';
+                    $status = true;
                     break;
                 }
             }
 
             if ($slot == null and $status == null) {
-                $status = 'CLOSED';
+                $status = false;
             }
         }
         return $status;
