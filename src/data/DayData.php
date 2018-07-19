@@ -39,4 +39,19 @@ class DayData extends \ArrayObject
     {
         return Craft::$app->getLocale()->getWeekDayName($this->dayIndex, $length);
     }
+
+    /**
+     * Returns whether the day has any time slots filled in.
+     *
+     * @return bool
+     */
+    public function getIsBlank(): bool
+    {
+        foreach ($this as $slot) {
+            if ($slot !== null) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

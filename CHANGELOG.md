@@ -8,6 +8,7 @@ Changelog
 - It’s now possible to access _today’s_ hours via `entry.<FieldHandle>.getToday()`. ([#15](https://github.com/craftcms/store-hours/issues/15))
 - It’s now possible to output weekday names via `entry.<FieldHandle>[<DayIndex>].getName()`.
 - It’s now possible to access a custom range of days, or change which days comes first, via `entry.<FieldHandle>.getRange()`.
+- It’s now possible to find out if all the time slots for a day are blank via `entry.<FieldHandle>[<DayIndex>].getIsBlank()`.
 
 ## 2.0.6 - 2017-12-04
 
