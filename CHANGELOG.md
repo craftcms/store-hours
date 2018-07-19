@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 2.1.0 - 2018-07-19
 
 ### Added
 - Added a new “Time Slots” field setting, which makes it possible to customize the available field columns. ([#22](https://github.com/craftcms/store-hours/issues/22))
