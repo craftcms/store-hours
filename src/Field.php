@@ -11,6 +11,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
+use craft\i18n\Locale;
+use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
 /**
@@ -32,8 +34,40 @@ class Field extends \craft\base\Field
         return Craft::t('store-hours', 'Store Hours');
     }
 
+    // Properties
+    // =========================================================================
+
+    /**
+     * @var array|null The time slots that should be shown in the field
+     */
+    public $slots;
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Create default time slots
+        if (empty($this->slots)) {
+            $this->slots = [
+                'slot1' => [
+                    'name' => 'Opening Time',
+                    'handle' => 'open',
+                    'type' => 'time'
+                ],
+                'slot2' => [
+                    'name' => 'Closing Time',
+                    'handle' => 'close',
+                    'type' => 'time'
+                ]
+            ];
+        }
+    }
 
     /**
      * @inheritdoc
@@ -46,29 +80,84 @@ class Field extends \craft\base\Field
     /**
      * @inheritdoc
      */
+    public function getSettingsHtml()
+    {
+        $columns = [
+            'name' => [
+                'heading' => Craft::t('app', 'Name'),
+                'type' => 'singleline',
+                'autopopulate' => 'handle'
+            ],
+            'handle' => [
+                'heading' => Craft::t('app', 'Handle'),
+                'code' => true,
+                'type' => 'singleline'
+            ],
+        ];
+
+        $view = Craft::$app->getView();
+
+        $jsId = Json::encode($view->namespaceInputId('slots'));
+        $jsName = Json::encode($view->namespaceInputName('slots'));
+        $jsCols = Json::encode($columns);
+
+        $js = <<<JS
+new Craft.EditableTable({$jsId}, {$jsName}, {$jsCols}, {
+    minRows: 1,
+    rowIdPrefix: 'slot'
+});
+JS;
+
+        $view->registerJs($js);
+
+        return $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
+            [
+                'label' => Craft::t('store-hours', 'Time Slots'),
+                'instructions' => Craft::t('store-hours', 'Define the time slots that authors should be able to fill times in for.'),
+                'id' => 'slots',
+                'name' => 'slots',
+                'cols' => $columns,
+                'rows' => $this->slots,
+                'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
+                'initJs' => false
+            ]
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        Craft::$app->getView()->registerAssetBundle(TimepickerAsset::class);
+
+        return '<input type="hidden" name="' . $this->handle . '" value="">' .
+            $this->_getInputHtml($value, false);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        if (is_string($value)) {
-            $value = Json::decode($value);
+        if (is_string($value) && !empty($value)) {
+            $value = Json::decodeIfJson($value);
+            ksort($value);
+        } else if ($value === null && $this->isFresh($element) && is_array($this->slots)) {
+            $value = [];
         }
 
-        $normalized = [];
-        $times = ['open', 'close'];
-
         for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                if (
-                    isset($value[$day][$time]) &&
-                    ($date = DateTimeHelper::toDateTime($value[$day][$time])) !== false
-                ) {
-                    $normalized[$day][$time] = $date;
-                } else {
-                    $normalized[$day][$time] = null;
+            // Normalize the values and make them accessible from both the slot IDs and the handles
+            foreach ($this->slots as $slotId => $slot) {
+                $value[$day][$slotId] = DateTimeHelper::toDateTime($value[$day][$slotId] ?? null) ?: null;
+                if ($slot['handle']) {
+                    $value[$day][$slot['handle']] = $value[$day][$slotId];
                 }
             }
         }
 
-        return $normalized;
+        return array_values($value);
     }
 
     /**
@@ -76,18 +165,18 @@ class Field extends \craft\base\Field
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
-        $serialized = [];
-        $times = ['open', 'close'];
+        if (!is_array($value) || empty($this->slots)) {
+            return null;
+        }
 
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                $timeValue = $value[$day][$time];
-                if ($timeValue instanceof \DateTime) {
-                    $serialized[$day][$time] = $timeValue->format(\DateTime::ATOM);
-                } else {
-                    $serialized[$day][$time] = null;
-                }
+        $serialized = [];
+
+        foreach ($value as $row) {
+            $serializedRow = [];
+            foreach (array_keys($this->slots) as $colId) {
+                $serializedRow[$colId] = parent::serializeValue($row[$colId] ?? null);
             }
+            $serialized[] = $serializedRow;
         }
 
         return $serialized;
@@ -96,37 +185,75 @@ class Field extends \craft\base\Field
     /**
      * @inheritdoc
      */
-    public function getSearchKeywords($value, ElementInterface $element): string
+    public function getStaticHtml($value, ElementInterface $element): string
     {
-        return '';
+        return $this->_getInputHtml($value, true);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getInputHtml($value, ElementInterface $element = null): string
-    {
-        return Craft::$app->getView()->renderTemplate('store-hours/input', [
-            'id' => Craft::$app->view->formatInputId($this->handle),
-            'name' => $this->handle,
-            'value' => $value,
-        ]);
-    }
+    // Private Methods
+    // =========================================================================
 
     /**
-     * @inheritdoc
+     * Returns the field's input HTML.
+     *
+     * @param array $value
+     * @param bool $static
+     * @return string
      */
-    public function isEmpty($value): bool
+    private function _getInputHtml(array $value, bool $static): string
     {
-        $times = ['open', 'close'];
-        for ($day = 0; $day <= 6; $day++) {
-            foreach ($times as $time) {
-                if (isset($value[$day][$time])) {
-                    return false;
-                }
-            }
+        if (empty($this->slots)) {
+            return '';
         }
 
-        return true;
+        $columns = [
+            'day' => [
+                'heading' => '',
+                'type' => 'heading',
+            ],
+        ];
+
+        foreach ($this->slots as $slotId => $slot) {
+            $columns[$slotId] = [
+                'heading' => Craft::t('site', $slot['name']),
+                'type' => 'time',
+            ];
+        }
+
+        // Get the day key order per the user's Week Start Day pref
+        $user = Craft::$app->getUser()->getIdentity();
+        $startDay = (int)($user->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay);
+        $days = range($startDay, 6, 1);
+        if ($startDay !== 0) {
+            $days = array_merge($days, range(0, $startDay - 1, -1));
+        }
+
+        // Build out the editable table rows, explicitly setting each cell value to an array with a 'value' key
+        $locale = Craft::$app->getLocale();
+        $rows = [];
+        foreach ($days as $day) {
+            $row = [
+                'day' => $locale->getWeekDayName($day, Locale::LENGTH_FULL),
+            ];
+
+            $data = $value[(string)$day] ?? [];
+            foreach ($this->slots as $slotId => $col) {
+                $row[$slotId] = [
+                    'value' => $data[$slotId] ?? null,
+                ];
+            }
+
+            $rows[(string)$day] = $row;
+        }
+
+        $view = Craft::$app->getView();
+        return $view->renderTemplate('_includes/forms/editableTable', [
+            'id' => $view->formatInputId($this->handle),
+            'name' => $this->handle,
+            'cols' => $columns,
+            'rows' => $rows,
+            'static' => $static,
+            'staticRows' => true
+        ]);
     }
 }
