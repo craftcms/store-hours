@@ -21,7 +21,7 @@ use yii\db\Schema;
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 2.0
  */
-class Field extends craft\base\Field
+class Field extends \craft\base\Field
 {
     // Static
     // =========================================================================
