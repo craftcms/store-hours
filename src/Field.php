@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      https://craftcms.com/
+ * @link https://craftcms.com/
  * @copyright Copyright (c) Pixel & Tonic, Inc.
- * @license   MIT
+ * @license MIT
  */
 
 namespace craft\storehours;
@@ -14,14 +14,16 @@ use craft\helpers\Json;
 use yii\db\Schema;
 
 /**
- * Store Hours field type
+ * Store Hours represents a Store Hours field.
  *
- * @property string $contentColumnType
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since  2.0
+ * @since 2.0
  */
 class Field extends \craft\base\Field
 {
+    // Static
+    // =========================================================================
+
     /**
      * @inheritdoc
      */
@@ -29,6 +31,9 @@ class Field extends \craft\base\Field
     {
         return Craft::t('store-hours', 'Store Hours');
     }
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * @inheritdoc

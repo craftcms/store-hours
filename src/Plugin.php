@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      https://craftcms.com/
+ * @link https://craftcms.com/
  * @copyright Copyright (c) Pixel & Tonic, Inc.
- * @license   MIT
+ * @license MIT
  */
 
 namespace craft\storehours;
@@ -15,7 +15,7 @@ use yii\base\Event;
  * Store Hours plugin.
  *
  * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
- * @since  2.0
+ * @since 2.0
  */
 class Plugin extends \craft\base\Plugin
 {
@@ -31,5 +31,4 @@ class Plugin extends \craft\base\Plugin
             $event->types[] = Field::class;
         });
     }
-
 }
