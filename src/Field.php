@@ -31,7 +31,7 @@ class Field extends \craft\base\Field
      */
     public static function displayName(): string
     {
-        return Craft::t('app', 'Store Hours');
+        return Craft::t('store-hours', 'Store Hours');
     }
 
     // Properties
@@ -56,12 +56,12 @@ class Field extends \craft\base\Field
         if (empty($this->slots)) {
             $this->slots = [
                 'slot1' => [
-                    'name' => Craft::t('app', 'Opening Time'),
+                    'name' => 'Opening Time',
                     'handle' => 'open',
                     'type' => 'time'
                 ],
                 'slot2' => [
-                    'name' => Craft::t('app', 'Closing Time'),
+                    'name' => 'Closing Time',
                     'handle' => 'close',
                     'type' => 'time'
                 ]
@@ -112,13 +112,13 @@ JS;
 
         return $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
             [
-                'label' => Craft::t('app', 'Time Slots'),
-                'instructions' => Craft::t('app', 'Define the time slots your  store hours table should have.'),
+                'label' => Craft::t('store-hours', 'Time Slots'),
+                'instructions' => Craft::t('store-hours', 'Define the time slots that authors should be able to fill times in for.'),
                 'id' => 'slots',
                 'name' => 'slots',
                 'cols' => $columns,
                 'rows' => $this->slots,
-                'addRowLabel' => Craft::t('app', 'Add a column'),
+                'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
                 'initJs' => false
             ]
         ]);
@@ -215,7 +215,7 @@ JS;
 
         foreach ($this->slots as $slotId => $slot) {
             $columns[$slotId] = [
-                'heading' => $slot['name'],
+                'heading' => Craft::t('site', $slot['name']),
                 'type' => 'time',
             ];
         }
