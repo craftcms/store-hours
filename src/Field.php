@@ -171,10 +171,7 @@ JS;
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
-        if (!is_array($value) || empty($this->slots)) {
-            return null;
-        }
-
+        /** @var FieldData $value */
         $serialized = [];
 
         foreach ($value as $row) {
