@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-namespace craft\storehours;
+namespace craft\storehours\data;
 
 /**
  * Class FieldData
@@ -15,9 +15,9 @@ class FieldData extends \ArrayObject
     /**
      * Returns today’s hours.
      *
-     * @return array
+     * @return DayData
      */
-    public function getToday(): array
+    public function getToday(): DayData
     {
         $today = (int)(new \DateTime())->format('w');
         return $this[$today];

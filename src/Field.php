@@ -12,6 +12,8 @@ use craft\base\ElementInterface;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\i18n\Locale;
+use craft\storehours\data\FieldData;
+use craft\storehours\data\DayData;
 use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
@@ -147,17 +149,21 @@ JS;
             $value = [];
         }
 
+        $data = [];
+
         for ($day = 0; $day <= 6; $day++) {
             // Normalize the values and make them accessible from both the slot IDs and the handles
+            $dayData = [];
             foreach ($this->slots as $slotId => $slot) {
-                $value[$day][$slotId] = DateTimeHelper::toDateTime($value[$day][$slotId] ?? null) ?: null;
+                $dayData[$slotId] = DateTimeHelper::toDateTime($value[$day][$slotId] ?? null) ?: null;
                 if ($slot['handle']) {
-                    $value[$day][$slot['handle']] = $value[$day][$slotId];
+                    $dayData[$slot['handle']] = $dayData[$slotId];
                 }
             }
+            $data[] = new DayData($day, $dayData);
         }
 
-        return new FieldData(array_values($value));
+        return new FieldData($data);
     }
 
     /**
