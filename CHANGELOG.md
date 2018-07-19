@@ -1,5 +1,9 @@
-Changelog
-=========
+# Release Notes for Store Hours
+
+## 2.1.0.1 - 2018-07-19
+
+### Fixed
+- Fixed a bug where older Store Hours data could get lost when upgrading to v2.1.
 
 ## 2.1.0 - 2018-07-19
 

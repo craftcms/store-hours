@@ -57,12 +57,12 @@ class Field extends \craft\base\Field
         // Create default time slots
         if (empty($this->slots)) {
             $this->slots = [
-                'slot1' => [
+                'open' => [
                     'name' => 'Opening Time',
                     'handle' => 'open',
                     'type' => 'time'
                 ],
-                'slot2' => [
+                'close' => [
                     'name' => 'Closing Time',
                     'handle' => 'close',
                     'type' => 'time'
