@@ -5,6 +5,7 @@ Changelog
 
 ### Added
 - Added a new “Time Slots” field setting, which makes it possible to customize the available field columns. ([#22](https://github.com/craftcms/store-hours/issues/22))
+- It’s now possible to access _today’s_ hours via `entry.<FieldHandle>.today`. ([#15](https://github.com/craftcms/store-hours/issues/15))
 
 ## 2.0.6 - 2017-12-04
 

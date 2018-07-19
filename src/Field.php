@@ -157,7 +157,7 @@ JS;
             }
         }
 
-        return array_values($value);
+        return new FieldData(array_values($value));
     }
 
     /**
@@ -200,7 +200,7 @@ JS;
      * @param bool $static
      * @return string
      */
-    private function _getInputHtml(array $value, bool $static): string
+    private function _getInputHtml(FieldData $value, bool $static): string
     {
         if (empty($this->slots)) {
             return '';
