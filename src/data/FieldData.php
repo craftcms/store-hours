@@ -71,7 +71,9 @@ class FieldData extends \ArrayObject
     public function getIsAllBlank(): bool
     {
         foreach ($this as $day) {
-            if (!$day->getIsBlank()) { return false; }
+            if (!$day->getIsBlank()) {
+                return false;
+            }
         }
 
         return true;
