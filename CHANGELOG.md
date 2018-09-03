@@ -5,6 +5,9 @@
 ### Added
 - It’s now possible to find out if all the time slots for all the days are blank via `entry.<FieldHandle>.getIsAllBlank()`. ([#29](https://github.com/craftcms/store-hours/pull/29))
 
+### Fixed
+- Fixed a bug where required Store Hours fields wouldn’t get a validation error if none of the time slots were filled in. 
+
 ## 2.1.0.1 - 2018-07-19
 
 ### Fixed

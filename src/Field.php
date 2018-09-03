@@ -188,6 +188,15 @@ JS;
     /**
      * @inheritdoc
      */
+    public function isValueEmpty($value, ElementInterface $element): bool
+    {
+        /** @var FieldData $value */
+        return $value->getIsAllBlank();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getStaticHtml($value, ElementInterface $element): string
     {
         return $this->_getInputHtml($value, true);
