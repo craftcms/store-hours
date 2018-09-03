@@ -62,4 +62,20 @@ class FieldData extends \ArrayObject
             array_slice($data, 0, $end + 1)
         );
     }
+    
+    /**
+     * Returns whether any day has any time slots filled in.
+     *
+     * @return bool
+     */
+    public function getIsAllBlank(): bool
+    {
+        foreach ($this as $day) {
+            if (!$day->getIsBlank()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
