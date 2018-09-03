@@ -1,6 +1,6 @@
 # Release Notes for Store Hours
 
-## Unreleased
+## 2.1.1 - 2018-09-03
 
 ### Added
 - It’s now possible to find out if all the time slots for all the days are blank via `entry.<FieldHandle>.getIsAllBlank()`. ([#29](https://github.com/craftcms/store-hours/pull/29))
