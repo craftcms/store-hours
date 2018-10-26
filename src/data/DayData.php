@@ -26,7 +26,7 @@ class DayData extends \ArrayObject
     public function __construct(int $dayIndex, array $input)
     {
         $this->dayIndex = $dayIndex;
-        parent::__construct($input);
+        parent::__construct(array_filter($input));
     }
 
     /**
