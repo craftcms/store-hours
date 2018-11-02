@@ -1,5 +1,10 @@
 # Release Notes for Store Hours
 
+## Unreleased
+
+## Fixed
+- Fixed an error if you tried to access a time slot from a template from a custom custom column that had an empty value. ([#31](https://github.com/craftcms/store-hours/issues/31))
+
 ## 2.1.1 - 2018-09-03
 
 ### Added
