@@ -30,6 +30,23 @@ class DayData extends \ArrayObject
     }
 
     /**
+     * @todo This can go away once https://github.com/twigphp/Twig/pull/2749 is merged
+     * into a Twig release.
+     *
+     * @param $name
+     * @return mixed
+     * @throws UnknownPropertyException
+     */
+    public function __get($name)
+    {
+        if ($this->offsetExists($name)) {
+            return $this[$name];
+        }
+
+        throw new UnknownPropertyException('Undefined property: ' . $name);
+    }
+
+    /**
      * Returns the day name
      *
      * @param string|null $length The format length that should be returned. Values: `\craft\i18n\Locale::LENGTH_ABBREVIATED`, `::SHORT`, `::MEDIUM`, `::FULL`
