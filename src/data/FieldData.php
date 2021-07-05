@@ -22,6 +22,16 @@ class FieldData extends \ArrayObject
         $today = (int)(new \DateTime())->format('w');
         return $this[$today];
     }
+    /**
+     * Returns tomorrows’s hours.
+     *
+     * @return TomorrowData
+     */
+    public function getTomorrow(): DayData
+    {
+        $tomorrow = (int)(new \DateTime())->format('w');
+        return $this[$tomorrow +1];
+    }
 
     /**
      * Returns a range of the days.
