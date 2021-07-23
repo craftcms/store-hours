@@ -25,9 +25,6 @@ use yii\db\Schema;
  */
 class Field extends \craft\base\Field
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -36,16 +33,10 @@ class Field extends \craft\base\Field
         return Craft::t('store-hours', 'Store Hours');
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var array|null The time slots that should be shown in the field
      */
     public $slots;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -201,9 +192,6 @@ JS;
     {
         return $this->_getInputHtml($value, true);
     }
-
-    // Private Methods
-    // =========================================================================
 
     /**
      * Returns the field's input HTML.

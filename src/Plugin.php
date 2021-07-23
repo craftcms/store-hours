@@ -27,8 +27,12 @@ class Plugin extends \craft\base\Plugin
         parent::init();
 
         // Register our field type.
-        Event::on(Fields::class, Fields::EVENT_REGISTER_FIELD_TYPES, function(RegisterComponentTypesEvent $event) {
-            $event->types[] = Field::class;
-        });
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = Field::class;
+            }
+        );
     }
 }
