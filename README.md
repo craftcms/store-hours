@@ -4,7 +4,7 @@ This plugin adds a new “Store Hours” field type to Craft, for collecting the
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.20 or later.
+This plugin requires Craft CMS 4.0 or later.
 
 ## Installation
 
@@ -26,7 +26,7 @@ cd /path/to/my-project.test
 composer require craftcms/store-hours
 
 # tell Craft to install the plugin
-./craft install/plugin store-hours
+php craft install/plugin store-hours
 ```
 
 ## Customizing Time Slots
