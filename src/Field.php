@@ -9,6 +9,7 @@ namespace craft\storehours;
 
 use Craft;
 use craft\base\ElementInterface;
+use craft\elements\User;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\i18n\Locale;
@@ -196,7 +197,7 @@ JS;
     /**
      * Returns the field's input HTML.
      *
-     * @param array $value
+     * @param FieldData $value
      * @param bool $static
      * @return string
      */
@@ -221,6 +222,7 @@ JS;
         }
 
         // Get the day key order per the user's Week Start Day pref
+        /** @var User $user */
         $user = Craft::$app->getUser()->getIdentity();
         $startDay = (int)($user->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay);
         $days = range($startDay, 6, 1);
