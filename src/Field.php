@@ -94,6 +94,9 @@ class Field extends \craft\base\Field
 
         $view->registerJsWithVars(fn($id, $name, $columns) => <<<JS
 new Craft.EditableTable($id, $name, $columns, {
+    allowAdd: true,
+    allowDelete: true,
+    allowReorder: true,
     minRows: 1,
     rowIdPrefix: 'slot'
 });
@@ -110,6 +113,9 @@ JS, [
             'name' => 'slots',
             'cols' => $columns,
             'rows' => $this->slots,
+            'allowAdd' => true,
+            'allowReorder' => true,
+            'allowDelete' => true,
             'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
             'initJs' => false,
         ]);
