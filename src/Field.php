@@ -10,6 +10,7 @@ namespace craft\storehours;
 use Craft;
 use craft\base\ElementInterface;
 use craft\elements\User;
+use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\i18n\Locale;
@@ -104,17 +105,15 @@ JS;
 
         $view->registerJs($js);
 
-        return $view->renderTemplateMacro('_includes/forms', 'editableTableField', [
-            [
-                'label' => Craft::t('store-hours', 'Time Slots'),
-                'instructions' => Craft::t('store-hours', 'Define the time slots that authors should be able to fill times in for.'),
-                'id' => 'slots',
-                'name' => 'slots',
-                'cols' => $columns,
-                'rows' => $this->slots,
-                'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
-                'initJs' => false,
-            ],
+        return Cp::editableTableFieldHtml([
+            'label' => Craft::t('store-hours', 'Time Slots'),
+            'instructions' => Craft::t('store-hours', 'Define the time slots that authors should be able to fill times in for.'),
+            'id' => 'slots',
+            'name' => 'slots',
+            'cols' => $columns,
+            'rows' => $this->slots,
+            'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
+            'initJs' => false,
         ]);
     }
 
