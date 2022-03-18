@@ -92,18 +92,16 @@ class Field extends \craft\base\Field
 
         $view = Craft::$app->getView();
 
-        $jsId = Json::encode($view->namespaceInputId('slots'));
-        $jsName = Json::encode($view->namespaceInputName('slots'));
-        $jsCols = Json::encode($columns);
-
-        $js = <<<JS
-new Craft.EditableTable({$jsId}, {$jsName}, {$jsCols}, {
+        $view->registerJsWithVars(fn($id, $name, $columns) => <<<JS
+new Craft.EditableTable($id, $name, $columns, {
     minRows: 1,
     rowIdPrefix: 'slot'
 });
-JS;
-
-        $view->registerJs($js);
+JS, [
+            $view->namespaceInputId('slots'),
+            $view->namespaceInputName('slots'),
+            $columns,
+        ]);
 
         return Cp::editableTableFieldHtml([
             'label' => Craft::t('store-hours', 'Time Slots'),
