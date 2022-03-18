@@ -8,6 +8,7 @@
 namespace craft\storehours\data;
 
 use Craft;
+use yii\base\UnknownPropertyException;
 
 /**
  * Class FieldData
@@ -33,7 +34,7 @@ class DayData extends \ArrayObject
      * @todo This can go away once https://github.com/twigphp/Twig/pull/2749 is merged
      * into a Twig release.
      *
-     * @param $name
+     * @param string $name
      * @return mixed
      * @throws UnknownPropertyException
      */
