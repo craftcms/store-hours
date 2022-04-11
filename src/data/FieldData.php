@@ -7,6 +7,8 @@
 
 namespace craft\storehours\data;
 
+use DateTime;
+
 /**
  * Class FieldData
  */
@@ -19,18 +21,37 @@ class FieldData extends \ArrayObject
      */
     public function getToday(): DayData
     {
-        $today = (int)(new \DateTime())->format('w');
-        return $this[$today];
+        return $this->_hoursByDate(new DateTime());
     }
+
     /**
-     * Returns tomorrows’s hours.
+     * Returns yesterday’s hours.
      *
-     * @return TomorrowData
+     * @return DayData
+     */
+    public function getYesterday(): DayData
+    {
+        return $this->_hoursByDate(new DateTime('-1 day'));
+    }
+
+    /**
+     * Returns tomorrow’s hours.
+     *
+     * @return DayData
      */
     public function getTomorrow(): DayData
     {
-        $tomorrow = (int)(new \DateTime())->format('w');
-        return $this[$tomorrow +1];
+        return $this->_hoursByDate(new DateTime('+1 day'));
+    }
+
+    /**
+     * @param DateTime $date
+     * @return DayData
+     */
+    private function _hoursByDate(DateTime $date): DayData
+    {
+        $day = (int)$date->format('w');
+        return $this[$day];
     }
 
     /**
