@@ -66,6 +66,7 @@ The exact time format that will be used when outputting times with the `|time` f
 You can get the hours for a single day using the following methods:
 
 | Method | Day |
+| ------ | --- |
 | `getSun()` | Sunday |
 | `getMon()` | Monday |
 | `getTue()` | Tuesday |
