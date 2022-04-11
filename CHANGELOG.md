@@ -5,6 +5,20 @@
 ### Added
 - Added Craft 4 compatibility
 
+## 2.2.0 - 2022-04-10
+
+### Added
+- Added `craft\storehours\data\FieldData::getSun()`.
+- Added `craft\storehours\data\FieldData::getMon()`.
+- Added `craft\storehours\data\FieldData::getTue()`.
+- Added `craft\storehours\data\FieldData::getWed()`.
+- Added `craft\storehours\data\FieldData::getThu()`.
+- Added `craft\storehours\data\FieldData::getFri()`.
+- Added `craft\storehours\data\FieldData::getSat()`.
+- Added `craft\storehours\data\FieldData::getSun()`.
+- Added `craft\storehours\data\FieldData::getYesterday()`.
+- Added `craft\storehours\data\FieldData::getTomorrow()`. ([#44](https://github.com/craftcms/store-hours/pull/44))
+
 ## 2.1.1.1 - 2018-11-01
 
 ## Fixed

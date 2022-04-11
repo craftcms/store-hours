@@ -7,11 +7,83 @@
 
 namespace craft\storehours\data;
 
+use DateTime;
+
 /**
  * Class FieldData
  */
 class FieldData extends \ArrayObject
 {
+    /**
+     * Returns Sunday’s hours
+     *
+     * @return DayData
+     */
+    public function getSun(): DayData
+    {
+        return $this[0];
+    }
+
+    /**
+     * Returns Monday’s hours
+     *
+     * @return DayData
+     */
+    public function getMon(): DayData
+    {
+        return $this[1];
+    }
+
+    /**
+     * Returns Tuesday’s hours
+     *
+     * @return DayData
+     */
+    public function getTue(): DayData
+    {
+        return $this[2];
+    }
+
+    /**
+     * Returns Wednesday’s hours
+     *
+     * @return DayData
+     */
+    public function getWed(): DayData
+    {
+        return $this[3];
+    }
+
+    /**
+     * Returns Thursday’s hours
+     *
+     * @return DayData
+     */
+    public function getThu(): DayData
+    {
+        return $this[4];
+    }
+
+    /**
+     * Returns Friday’s hours
+     *
+     * @return DayData
+     */
+    public function getFri(): DayData
+    {
+        return $this[5];
+    }
+
+    /**
+     * Returns Saturday’s hours
+     *
+     * @return DayData
+     */
+    public function getSat(): DayData
+    {
+        return $this[6];
+    }
+
     /**
      * Returns today’s hours.
      *
@@ -19,8 +91,37 @@ class FieldData extends \ArrayObject
      */
     public function getToday(): DayData
     {
-        $today = (int)(new \DateTime())->format('w');
-        return $this[$today];
+        return $this->_hoursByDate(new DateTime());
+    }
+
+    /**
+     * Returns yesterday’s hours.
+     *
+     * @return DayData
+     */
+    public function getYesterday(): DayData
+    {
+        return $this->_hoursByDate(new DateTime('-1 day'));
+    }
+
+    /**
+     * Returns tomorrow’s hours.
+     *
+     * @return DayData
+     */
+    public function getTomorrow(): DayData
+    {
+        return $this->_hoursByDate(new DateTime('+1 day'));
+    }
+
+    /**
+     * @param DateTime $date
+     * @return DayData
+     */
+    private function _hoursByDate(DateTime $date): DayData
+    {
+        $day = (int)$date->format('w');
+        return $this[$day];
     }
 
     /**
