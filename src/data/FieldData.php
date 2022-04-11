@@ -15,6 +15,76 @@ use DateTime;
 class FieldData extends \ArrayObject
 {
     /**
+     * Returns Sunday’s hours
+     *
+     * @return DayData
+     */
+    public function getSun(): DayData
+    {
+        return $this[0];
+    }
+
+    /**
+     * Returns Monday’s hours
+     *
+     * @return DayData
+     */
+    public function getMon(): DayData
+    {
+        return $this[1];
+    }
+
+    /**
+     * Returns Tuesday’s hours
+     *
+     * @return DayData
+     */
+    public function getTue(): DayData
+    {
+        return $this[2];
+    }
+
+    /**
+     * Returns Wednesday’s hours
+     *
+     * @return DayData
+     */
+    public function getWed(): DayData
+    {
+        return $this[3];
+    }
+
+    /**
+     * Returns Thursday’s hours
+     *
+     * @return DayData
+     */
+    public function getThu(): DayData
+    {
+        return $this[4];
+    }
+
+    /**
+     * Returns Friday’s hours
+     *
+     * @return DayData
+     */
+    public function getFri(): DayData
+    {
+        return $this[5];
+    }
+
+    /**
+     * Returns Saturday’s hours
+     *
+     * @return DayData
+     */
+    public function getSat(): DayData
+    {
+        return $this[6];
+    }
+
+    /**
      * Returns today’s hours.
      *
      * @return DayData
