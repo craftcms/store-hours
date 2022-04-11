@@ -61,15 +61,31 @@ You can loop through your Store Hours fields to access info for each day of the 
 
 The exact time format that will be used when outputting times with the `|time` filter depends on the current application locale. See the [Craft documentation](https://docs.craftcms.com/v3/dev/filters.html#time) for details on how it can be customized.
 
-### Showing Today’s Hours
+### Showing a Single Day’s Hours
 
-To only show _today’s_ hours, use the `getToday()` field method:
+You can get the hours for a single day using the following methods:
+
+| Method | Day |
+| `getSun()` | Sunday |
+| `getMon()` | Monday |
+| `getTue()` | Tuesday |
+| `getWed()` | Wednesday |
+| `getThu()` | Thursday |
+| `getFri()` | Friday |
+| `getSat()` | Saturday |
+| `getYesterday()` | Yesterday |
+| `getToday()` | Today |
+| `getTomorrow()` | Tomorrow |
 
 ```twig
 <h3>Today’s Hours</h3>
 {% set today = entry.<FieldHandle>.today %}
 {% if today.isBlank %}
   <p>Sorry, we’re closed today.</p>
+  {% set tomorrow = entry.<FieldHandle>.tomorrow %}
+  {% if not tomorrow.isBlank %}
+    <p>We’ll be back open tomorrow at {{ tomorrow.open|time }}.</p>
+  {% endif %}
 {% else %}
   <p>We’re open from {{ today.open|time }} to {{ today.close|time }} today.</p>
 {% endif %}
