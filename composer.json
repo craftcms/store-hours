@@ -26,8 +26,14 @@
     "docs": "https://github.com/craftcms/store-hours/blob/v2/README.md",
     "rss": "https://github.com/craftcms/store-hours/commits/v2.atom"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "craftcms/cms": "^3.0.0-beta.20"
+  },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main"
   },
   "autoload": {
     "psr-4": {
@@ -39,5 +45,16 @@
     "handle": "store-hours",
     "schemaVersion": "1.0.2",
     "documentationUrl": "https://github.com/craftcms/store-hours/blob/v2/README.md"
+  },
+  "scripts": {
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --ansi --fix",
+    "phpstan": "phpstan --memory-limit=1G"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   }
 }

@@ -9,11 +9,12 @@ namespace craft\storehours;
 
 use Craft;
 use craft\base\ElementInterface;
+use craft\elements\User;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\i18n\Locale;
-use craft\storehours\data\FieldData;
 use craft\storehours\data\DayData;
+use craft\storehours\data\FieldData;
 use craft\web\assets\timepicker\TimepickerAsset;
 use yii\db\Schema;
 
@@ -25,9 +26,6 @@ use yii\db\Schema;
  */
 class Field extends \craft\base\Field
 {
-    // Static
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -36,16 +34,10 @@ class Field extends \craft\base\Field
         return Craft::t('store-hours', 'Store Hours');
     }
 
-    // Properties
-    // =========================================================================
-
     /**
      * @var array|null The time slots that should be shown in the field
      */
     public $slots;
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -60,13 +52,13 @@ class Field extends \craft\base\Field
                 'open' => [
                     'name' => 'Opening Time',
                     'handle' => 'open',
-                    'type' => 'time'
+                    'type' => 'time',
                 ],
                 'close' => [
                     'name' => 'Closing Time',
                     'handle' => 'close',
-                    'type' => 'time'
-                ]
+                    'type' => 'time',
+                ],
             ];
         }
     }
@@ -88,12 +80,12 @@ class Field extends \craft\base\Field
             'name' => [
                 'heading' => Craft::t('app', 'Name'),
                 'type' => 'singleline',
-                'autopopulate' => 'handle'
+                'autopopulate' => 'handle',
             ],
             'handle' => [
                 'heading' => Craft::t('app', 'Handle'),
                 'code' => true,
-                'type' => 'singleline'
+                'type' => 'singleline',
             ],
         ];
 
@@ -121,8 +113,8 @@ JS;
                 'cols' => $columns,
                 'rows' => $this->slots,
                 'addRowLabel' => Craft::t('store-hours', 'Add a time slot'),
-                'initJs' => false
-            ]
+                'initJs' => false,
+            ],
         ]);
     }
 
@@ -145,7 +137,7 @@ JS;
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
             ksort($value);
-        } else if ($value === null && $this->isFresh($element) && is_array($this->slots)) {
+        } elseif ($value === null && $this->isFresh($element) && is_array($this->slots)) {
             $value = [];
         }
 
@@ -202,13 +194,10 @@ JS;
         return $this->_getInputHtml($value, true);
     }
 
-    // Private Methods
-    // =========================================================================
-
     /**
      * Returns the field's input HTML.
      *
-     * @param array $value
+     * @param FieldData $value
      * @param bool $static
      * @return string
      */
@@ -233,6 +222,7 @@ JS;
         }
 
         // Get the day key order per the user's Week Start Day pref
+        /** @var User $user */
         $user = Craft::$app->getUser()->getIdentity();
         $startDay = (int)($user->getPreference('weekStartDay') ?? Craft::$app->getConfig()->getGeneral()->defaultWeekStartDay);
         $days = range($startDay, 6, 1);
@@ -265,7 +255,7 @@ JS;
             'cols' => $columns,
             'rows' => $rows,
             'static' => $static,
-            'staticRows' => true
+            'staticRows' => true,
         ]);
     }
 }

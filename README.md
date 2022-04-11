@@ -12,7 +12,7 @@ You can install this plugin from the Plugin Store or with Composer.
 
 #### From the Plugin Store
 
-Go to the Plugin Store in your project’s Control Panel and search for “Store Hours”. Then click on the “Install” button in its modal window.
+Go to the Plugin Store in your project’s Control Panel and search for “Store Hours”. Then press **Install** in its modal window.
 
 #### With Composer
 
@@ -37,7 +37,7 @@ Store Hours fields have a setting called “Time Slots” that lets you customiz
 
 Each row you add here will end up adding a new column to the field inputs.
 
-![A Store Hours field with four custom time slots](assets/field.png)  
+![A Store Hours field with four custom time slots](assets/field.png)
 
 ## Templating
 
@@ -46,16 +46,16 @@ You can loop through your Store Hours fields to access info for each day of the 
 ```twig
 <h3>Opening Hours</h3>
 <dl>
-    {% for day in entry.<FieldHandle> %}
-        <dt>{{ day.name }}</dt>
-        <dd>
-            {% if day.isBlank %}
-                Closed
-            {% else %}
-                {{ day.open|time }} - {{ day.close|time }}
-            {% endif %}
-        </dd>
-    {% endfor %}
+  {% for day in entry.<FieldHandle> %}
+    <dt>{{ day.name }}</dt>
+    <dd>
+      {% if day.isBlank %}
+        Closed
+      {% else %}
+        {{ day.open|time }} - {{ day.close|time }}
+      {% endif %}
+    </dd>
+  {% endfor %}
 </dl>
 ```
 
@@ -69,9 +69,9 @@ To only show _today’s_ hours, use the `getToday()` field method:
 <h3>Today’s Hours</h3>
 {% set today = entry.<FieldHandle>.today %}
 {% if today.isBlank %}
-    <p>Sorry, we’re closed today.</p>
+  <p>Sorry, we’re closed today.</p>
 {% else %}
-    <p>We’re open from {{ today.open|time }} to {{ today.close|time }} today.</p>
+  <p>We’re open from {{ today.open|time }} to {{ today.close|time }} today.</p>
 {% endif %}
 ``` 
 
@@ -107,7 +107,7 @@ You can use the `getRange()` field method to return the full list of days with a
 {% set range = entry.<FieldHandle>.getRange(1, 0) %}
 
 {% for day in range %}
-    {# ... #}
+  {# ... #}
 {% endfor %}
 ```
 
@@ -118,7 +118,7 @@ As a shortcut, you can also skip passing the end day when you want to do this:
 {% set range = entry.<FieldHandle>.getRange(1) %}
 
 {% for day in range %}
-    {# ... #}
+  {# ... #}
 {% endfor %}
 ```
 
@@ -129,15 +129,15 @@ You can quickly find out whether all the time slots in a day were left blank usi
 ```twig
 <h3>Opening Hours</h3>
 <dl>
-    {% for day in entry.<FieldHandle> %}
-        <dt>{{ day.name }}</dt>
-        <dd>
-            {% if day.isBlank %}
-                Closed
-            {% else %}
-                {{ day.open|time }} - {{ day.close|time }}
-            {% endif %}
-        </dd>
-    {% endfor %}
+  {% for day in entry.<FieldHandle> %}
+    <dt>{{ day.name }}</dt>
+    <dd>
+      {% if day.isBlank %}
+        Closed
+      {% else %}
+        {{ day.open|time }} - {{ day.close|time }}
+      {% endif %}
+    </dd>
+  {% endfor %}
 </dl>
 ```
