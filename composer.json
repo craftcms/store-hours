@@ -1,7 +1,7 @@
 {
   "name": "craftcms/store-hours",
   "description": "This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week.",
-  "version": "2.1.1.1",
+  "version": "2.2.0",
   "type": "craft-plugin",
   "keywords": [
     "html",
