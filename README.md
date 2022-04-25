@@ -26,7 +26,7 @@ cd /path/to/my-project.test
 composer require craftcms/store-hours
 
 # tell Craft to install the plugin
-./craft install/plugin store-hours
+./craft plugin/install store-hours
 ```
 
 ## Customizing Time Slots
