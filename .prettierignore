@@ -1,0 +1,5 @@
+*.md
+*.php
+composer.lock
+lib/*
+vendor/*

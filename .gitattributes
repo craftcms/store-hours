@@ -16,6 +16,8 @@ package-lock.json export-ignore
 package.json export-ignore
 phpstan.neon export-ignore
 tests/ export-ignore
+.prettierignore export-ignore
+.prettierrc.json export-ignore
 
 # Auto detect text files and perform LF normalization
 * text=auto
