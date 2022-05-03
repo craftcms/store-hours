@@ -1,11 +1,6 @@
 # Release Notes for Store Hours
 
-## 3.0.0-beta.2 - 2022-04-10
-
-### Added
-- Ported changes from 2.2.0.
-
-## 3.0.0-beta.1 - 2022-03-18
+## 3.0.0 - 2022-05-03
 
 ### Added
 - Added Craft 4 compatibility
