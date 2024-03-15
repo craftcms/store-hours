@@ -10,13 +10,19 @@ namespace craft\storehours;
 use Craft;
 use craft\base\ElementInterface;
 use craft\elements\User;
+use craft\gql\GqlEntityRegistry;
 use craft\helpers\Cp;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\i18n\Locale;
 use craft\storehours\data\DayData;
 use craft\storehours\data\FieldData;
+use craft\storehours\gql\types\Day;
+use craft\storehours\gql\types\generators\DayType;
 use craft\web\assets\timepicker\TimepickerAsset;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\Type;
 use yii\db\Schema;
 
 /**
@@ -124,7 +130,7 @@ JS, [
     /**
      * @inheritdoc
      */
-    public function getInputHtml(mixed $value, ?\craft\base\ElementInterface $element = null): string
+    public function inputHtml(mixed $value, ?ElementInterface $element = null): string
     {
         Craft::$app->getView()->registerAssetBundle(TimepickerAsset::class);
 
@@ -135,7 +141,7 @@ JS, [
     /**
      * @inheritdoc
      */
-    public function normalizeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
@@ -164,7 +170,7 @@ JS, [
     /**
      * @inheritdoc
      */
-    public function serializeValue(mixed $value, ?\craft\base\ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         /** @var FieldData $value */
         $serialized = [];
@@ -260,5 +266,27 @@ JS, [
             'static' => $static,
             'staticRows' => true,
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.1.0
+     */
+    public function getContentGqlType(): ListOfType
+    {
+        return Type::listOf(DayType::generateType($this));
+    }
+
+    /**
+     * @inheritdoc
+     * @since 3.1.0
+     */
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $typeName = "{$this->handle}_DayInput";
+        return Type::listOf(GqlEntityRegistry::getOrCreate($typeName, fn() => new InputObjectType([
+            'name' => $typeName,
+            'fields' => fn() => Day::prepareFieldDefinition($this->slots),
+        ])));
     }
 }
