@@ -1,5 +1,9 @@
 # Release Notes for Store Hours
 
+## 4.0.0 - 2024-03-15
+
+- Store Hours now requires Craft 5.0.0-beta.1 or later.
+
 ## 3.1.0 - 2024-03-15
 
 - Added GraphQL support. ([#55](https://github.com/craftcms/store-hours/pull/55))

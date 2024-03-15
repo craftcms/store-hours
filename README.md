@@ -4,7 +4,7 @@ This plugin adds a new “Store Hours” field type to Craft, for collecting the
 
 ## Requirements
 
-This plugin requires Craft CMS 4.0 or later.
+This plugin requires Craft CMS 5.0 or later.
 
 ## Installation
 
