@@ -1,6 +1,6 @@
 # Release Notes for Store Hours
 
-## Unreleased
+## 3.1.0 - 2024-03-15
 
 - Added GraphQL support. ([#55](https://github.com/craftcms/store-hours/pull/55))
 - Added `craft\storehours\gql\types\Day`.
