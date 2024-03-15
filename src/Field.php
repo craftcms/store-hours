@@ -73,9 +73,9 @@ class Field extends \craft\base\Field
     /**
      * @inheritdoc
      */
-    public function getContentColumnType(): array|string
+    public static function dbType(): array|string|null
     {
-        return Schema::TYPE_TEXT;
+        return Schema::TYPE_JSON;
     }
 
     /**
@@ -130,7 +130,7 @@ JS, [
     /**
      * @inheritdoc
      */
-    public function inputHtml(mixed $value, ?ElementInterface $element = null): string
+    public function inputHtml(mixed $value, ?ElementInterface $element = null, bool $inline = false): string
     {
         Craft::$app->getView()->registerAssetBundle(TimepickerAsset::class);
 
@@ -178,7 +178,7 @@ JS, [
         foreach ($value as $row) {
             $serializedRow = [];
             foreach (array_keys($this->slots) as $colId) {
-                $serializedRow[$colId] = parent::serializeValue($row[$colId] ?? null);
+                $serializedRow[$colId] = parent::serializeValue($row[$colId] ?? null, $element);
             }
             $serialized[] = $serializedRow;
         }
