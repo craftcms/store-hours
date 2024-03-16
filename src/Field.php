@@ -145,11 +145,11 @@ JS, [
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
+            ksort($value);
         } elseif ($value === null && is_array($this->slots)) {
             $value = [];
         }
 
-        ksort($value);
         $data = [];
 
         for ($day = 0; $day <= 6; $day++) {
