@@ -145,7 +145,7 @@ JS, [
     {
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
-        } elseif ($value === null && $this->isFresh($element) && is_array($this->slots)) {
+        } elseif ($value === null && is_array($this->slots)) {
             $value = [];
         }
 
