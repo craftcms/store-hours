@@ -143,13 +143,20 @@ JS, [
      */
     public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
+        if ($value instanceof FieldData) {
+            return $value;
+        }
+
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         } elseif ($value === null && $this->isFresh($element) && is_array($this->slots)) {
             $value = [];
         }
 
-        ksort($value);
+        if (is_array($value)) {
+            ksort($value);
+        }
+
         $data = [];
 
         for ($day = 0; $day <= 6; $day++) {

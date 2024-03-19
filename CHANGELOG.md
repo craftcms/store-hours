@@ -1,5 +1,9 @@
 # Release Notes for Store Hours
 
+## 4.0.1 - 2024-03-18
+
+- Fixed a PHP error that could occur when editing an element with a Store Hours field.
+
 ## 4.0.0 - 2024-03-15
 
 - Store Hours now requires Craft 5.0.0-beta.1 or later.
