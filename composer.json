@@ -22,13 +22,13 @@
     "email": "support@craftcms.com",
     "issues": "https://github.com/craftcms/store-hours/issues?state=open",
     "source": "https://github.com/craftcms/store-hours",
-    "docs": "https://github.com/craftcms/store-hours/blob/v2/README.md",
-    "rss": "https://github.com/craftcms/store-hours/commits/v2.atom"
+    "docs": "https://github.com/craftcms/store-hours/blob/4.x/README.md",
+    "rss": "https://github.com/craftcms/store-hours/commits/4.x.atom"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "craftcms/cms": "^5.0.0-beta.1",
+    "craftcms/cms": "^5.0.0-beta.1|^6.0.0-alpha.1",
     "php": "^8.2"
   },
   "require-dev": {
@@ -45,7 +45,7 @@
     "name": "Store Hours",
     "handle": "store-hours",
     "schemaVersion": "1.0.2",
-    "documentationUrl": "https://github.com/craftcms/store-hours/blob/v2/README.md"
+    "documentationUrl": "https://github.com/craftcms/store-hours/blob/4.x/README.md"
   },
   "scripts": {
     "check-cs": "ecs check --ansi",
