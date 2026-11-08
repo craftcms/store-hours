@@ -181,7 +181,7 @@ class FieldData extends \ArrayObject
      * @param int|null $end The last day to return. If null, it will be whatever day comes before `$start`.
      * @return DayData[]
      */
-    public function getRange(int $start, int $end = null): array
+    public function getRange(int $start, ?int $end = null): array
     {
         if ($end === null) {
             $end = $start === 0 ? 6 : $start - 1;
@@ -206,13 +206,12 @@ class FieldData extends \ArrayObject
      * @param int|null $end The last day to return. If null, it will be whatever day comes before `$start`.
      * @return DayData[][]
      */
-    public function getGroupedRanges(int $start, int $end = null): array
+    public function getGroupedRanges(int $start, ?int $end = null): array
     {
         $range = $this->getRange($start, $end);
         $groups = [];
         $lastSlotKey = null;
         foreach ($range as $day) {
-            /** @phpstan-ignore-next-line */
             $slotKey = implode('-', array_map(fn(?DateTime $slot) => $slot ? $this->minuteOfDay($slot) : 'null', (array)$day));
             if ($slotKey !== $lastSlotKey) {
                 $groups[] = [];

@@ -331,7 +331,7 @@ JS, [
 
         $days = range($startDay, 6);
         if ($startDay !== 0) {
-            $days = array_merge($days, range(0, $startDay - 1, -1));
+            $days = array_merge($days, range(0, $startDay - 1));
         }
 
         return $days;

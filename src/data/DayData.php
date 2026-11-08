@@ -53,7 +53,7 @@ class DayData extends \ArrayObject
      * @param string|null $length The format length that should be returned. Values: `\craft\i18n\Locale::LENGTH_ABBREVIATED`, `::SHORT`, `::MEDIUM`, `::FULL`
      * @return string
      */
-    public function getName(string $length = null): string
+    public function getName(?string $length = null): string
     {
         return Craft::$app->getLocale()->getWeekDayName($this->dayIndex, $length);
     }
