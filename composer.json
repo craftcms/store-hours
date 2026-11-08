@@ -3,13 +3,11 @@
   "description": "This plugin adds a new “Store Hours” field type to Craft, for collecting the opening and closing hours of a business for each day of the week.",
   "type": "craft-plugin",
   "keywords": [
-    "html",
     "hours",
     "store",
     "cms",
     "craftcms",
-    "json",
-    "yii2"
+    "laravel"
   ],
   "license": "MIT",
   "authors": [
@@ -22,43 +20,53 @@
     "email": "support@craftcms.com",
     "issues": "https://github.com/craftcms/store-hours/issues?state=open",
     "source": "https://github.com/craftcms/store-hours",
-    "docs": "https://github.com/craftcms/store-hours/blob/v2/README.md",
-    "rss": "https://github.com/craftcms/store-hours/commits/v2.atom"
+    "docs": "https://github.com/craftcms/store-hours/blob/5.x/README.md",
+    "rss": "https://github.com/craftcms/store-hours/commits/5.x.atom"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "craftcms/cms": "^5.0.0-beta.1",
-    "php": "^8.2"
+    "php": "^8.5",
+    "craftcms/cms": "^6.0.0"
   },
   "require-dev": {
-    "craftcms/ecs": "dev-main",
-    "craftcms/phpstan": "dev-main",
-    "craftcms/rector": "dev-main"
+    "larastan/larastan": "^3.13",
+    "laravel/pint": "^1.22",
+    "orchestra/testbench": "^11.0",
+    "pestphp/pest": "^5.0",
+    "pestphp/pest-plugin-laravel": "^5.0",
+    "phpstan/phpstan": "^2.1"
   },
   "autoload": {
     "psr-4": {
-      "craft\\storehours\\": "src/"
+      "CraftCms\\StoreHours\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CraftCms\\StoreHours\\Tests\\": "tests/",
+      "CraftCms\\Cms\\Database\\Factories\\": "vendor/craftcms/cms/database/Factories/"
     }
   },
   "extra": {
+    "class": "CraftCms\\StoreHours\\Plugin",
     "name": "Store Hours",
     "handle": "store-hours",
-    "schemaVersion": "1.0.2",
-    "documentationUrl": "https://github.com/craftcms/store-hours/blob/v2/README.md"
+    "documentationUrl": "https://github.com/craftcms/store-hours/blob/5.x/README.md"
   },
   "scripts": {
-    "check-cs": "ecs check --ansi",
-    "fix-cs": "ecs check --ansi --fix",
-    "phpstan": "phpstan --memory-limit=1G"
+    "check-cs": "pint --test",
+    "fix-cs": "pint",
+    "phpstan": "phpstan --memory-limit=1G",
+    "test": "pest"
   },
   "config": {
     "platform": {
-      "php": "8.0.2"
+      "php": "8.5"
     },
     "allow-plugins": {
-      "yiisoft/yii2-composer": true,
-      "craftcms/plugin-installer": true
+      "craftcms/plugin-installer": true,
+      "pestphp/pest-plugin": true
     }
   }
 }
