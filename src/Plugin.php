@@ -1,38 +1,24 @@
 <?php
-/**
- * @link https://craftcms.com/
- * @copyright Copyright (c) Pixel & Tonic, Inc.
- * @license MIT
- */
 
-namespace craft\storehours;
+declare(strict_types=1);
 
-use craft\events\RegisterComponentTypesEvent;
-use craft\services\Fields;
-use yii\base\Event;
+namespace CraftCms\StoreHours;
+
+use CraftCms\Cms\Plugin\Plugin as BasePlugin;
+use CraftCms\StoreHours\Fields\StoreHours;
 
 /**
  * Store Hours plugin.
  *
- * @author Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since 2.0
  */
-class Plugin extends \craft\base\Plugin
+class Plugin extends BasePlugin
 {
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
+    public string $schemaVersion = '2.0.0';
 
-        // Register our field type.
-        Event::on(
-            Fields::class,
-            Fields::EVENT_REGISTER_FIELD_TYPES,
-            function(RegisterComponentTypesEvent $event) {
-                $event->types[] = Field::class;
-            }
-        );
-    }
+    public string $minVersionRequired = '4.0.0';
+
+    protected array $fieldTypes = [
+        StoreHours::class,
+    ];
 }

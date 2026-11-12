@@ -4,7 +4,9 @@ This plugin adds a new “Store Hours” field type to Craft, for collecting the
 
 ## Requirements
 
-This plugin requires Craft CMS 5.0 or later.
+This plugin requires Craft CMS 6.0 or later, and PHP 8.5 or later.
+
+Upgrading from Store Hours 4? See [UPGRADE.md](UPGRADE.md).
 
 ## Installation
 
@@ -26,7 +28,7 @@ cd /path/to/my-project.test
 composer require craftcms/store-hours
 
 # tell Craft to install the plugin
-php craft plugin/install store-hours
+php artisan craft:plugin:install store-hours
 ```
 
 ## Customizing Time Slots
@@ -59,7 +61,7 @@ You can loop through your Store Hours fields to access info for each day of the 
 </dl>
 ```
 
-The exact time format that will be used when outputting times with the `|time` filter depends on the current application locale. See the [Craft documentation](https://docs.craftcms.com/v3/dev/filters.html#time) for details on how it can be customized.
+The exact time format that will be used when outputting times with the `|time` filter depends on the current application locale. See the [Craft documentation](https://craftcms.com/docs/5.x/reference/twig/filters.html#time) for details on how it can be customized.
 
 ### Showing a Single Day’s Hours
 

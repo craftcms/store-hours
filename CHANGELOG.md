@@ -1,5 +1,20 @@
 # Release Notes for Store Hours
 
+## 5.0.0 - 2026-11-12
+- Store Hours now requires Craft CMS 6.0 and PHP 8.5, and no longer needs the `craftcms/yii2-adapter` package. See `UPGRADE.md`.
+- Store Hours fields now use Craft 6’s field settings and table UIs.
+- `FieldData::getIsOpen()` and `getGroupedRanges()` now take minutes into account.
+- GraphQL mutations can now set time slots by their handles.
+- Renamed `craft\storehours\Field` to `CraftCms\StoreHours\Fields\StoreHours`. Existing fields are updated when running `php artisan craft:up`.
+- Moved the other classes from the `craft\storehours` namespace to `CraftCms\StoreHours`.
+
+## 4.3.1 - 2026-11-10
+- Store Hours now suggests the `craftcms/yii2-adapter` package, which it requires on Craft CMS 6.
+
+## 4.3.0 - 2026-11-10
+- Added support for Craft CMS 6 with the `craftcms/yii2-adapter` package.
+- Fixed a PHP error that occurred when editing an element with a Store Hours field whose “Start Day” setting was Tuesday or later, on PHP 8.3 or later.
+
 ## 4.2.0 - 2024-07-28
 - Added `craft\storehours\data\FieldData::getGroupedRanges()`.
 
