@@ -7,7 +7,13 @@
 - GraphQL mutations can now set time slots by their handles.
 - Renamed `craft\storehours\Field` to `CraftCms\StoreHours\Fields\StoreHours`. Existing fields are updated when running `php artisan craft:up`.
 - Moved the other classes from the `craft\storehours` namespace to `CraftCms\StoreHours`.
-- Fixed a PHP error that occurred when editing an element with a Store Hours field whose “Start Day” setting was Tuesday or later.
+
+## 4.3.1 - 2026-11-10
+- Store Hours now suggests the `craftcms/yii2-adapter` package, which it requires on Craft CMS 6.
+
+## 4.3.0 - 2026-11-10
+- Added support for Craft CMS 6 with the `craftcms/yii2-adapter` package.
+- Fixed a PHP error that occurred when editing an element with a Store Hours field whose “Start Day” setting was Tuesday or later, on PHP 8.3 or later.
 
 ## 4.2.0 - 2024-07-28
 - Added `craft\storehours\data\FieldData::getGroupedRanges()`.
