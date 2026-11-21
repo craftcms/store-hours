@@ -1,5 +1,9 @@
 # Release Notes for Store Hours
 
+## Unreleased
+- Added translations for all languages Craft supports. ([#66](https://github.com/craftcms/store-hours/pull/66))
+- New Store Hours fields’ default “Opening Time” and “Closing Time” time slot names are now translated. ([#66](https://github.com/craftcms/store-hours/pull/66))
+
 ## 5.0.0 - 2026-11-12
 - Store Hours now requires Craft CMS 6.0 and PHP 8.5, and no longer needs the `craftcms/yii2-adapter` package. See `UPGRADE.md`.
 - Store Hours fields now use Craft 6’s field settings and table UIs.
