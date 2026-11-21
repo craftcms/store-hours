@@ -7,7 +7,6 @@
 /.gitignore export-ignore
 /.lintstagedrc.json export-ignore
 /.nvmrc export-ignore
-/crowdin.yml export-ignore
 /CHANGELOG.md export-ignore
 /README.md export-ignore
 /SECURITY.md export-ignore
@@ -31,6 +30,10 @@
 /.ddev/ export-ignore
 /.github/ export-ignore
 /.husky/ export-ignore
+
+# Translation files other than the en source are managed by translation-sync
+/lang/*/*.php linguist-generated=true
+/lang/en/*.php -linguist-generated
 
 # Auto detect text files and perform LF normalization
 * text=auto
