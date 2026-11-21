@@ -6,7 +6,7 @@ return [
     'Closing Time' => 'Orario di chiusura',
     'Define the time slots that authors should be able to fill times in for.' => 'Definisci le fasce orarie per le quali gli autori potranno inserire gli orari.',
     'Opening Time' => 'Orario di apertura',
-    'Same as user’s preference' => 'Uguale alla preferenza dell\'utente',
+    'Same as user’s preference' => 'Uguale alla preferenza dell’utente',
     'Start Day' => 'Giorno di inizio',
     'Store Hours' => 'Orari di apertura',
     'Time Slots' => 'Fasce orarie',
