@@ -31,8 +31,8 @@
 /.husky/ export-ignore
 
 # Translation files other than the en source are managed by translation-sync
-/src/translations/** linguist-generated=true
-/src/translations/en/** linguist-generated=false
+/src/translations/*/*.php linguist-generated=true
+/src/translations/en/*.php -linguist-generated
 
 # Auto detect text files and perform LF normalization
 * text=auto
