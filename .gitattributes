@@ -31,5 +31,9 @@
 /.github/ export-ignore
 /.husky/ export-ignore
 
+# Translation files other than the en source are managed by translation-sync
+/lang/** linguist-generated=true
+/lang/en/** linguist-generated=false
+
 # Auto detect text files and perform LF normalization
 * text=auto
