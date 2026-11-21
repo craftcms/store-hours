@@ -71,12 +71,12 @@ class Field extends \craft\base\Field
         if (empty($this->slots)) {
             $this->slots = [
                 'open' => [
-                    'name' => 'Opening Time',
+                    'name' => Craft::t('store-hours', 'Opening Time'),
                     'handle' => 'open',
                     'type' => 'time',
                 ],
                 'close' => [
-                    'name' => 'Closing Time',
+                    'name' => Craft::t('store-hours', 'Closing Time'),
                     'handle' => 'close',
                     'type' => 'time',
                 ],
