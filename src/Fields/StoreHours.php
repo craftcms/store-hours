@@ -95,8 +95,8 @@ class StoreHours extends Field
 
         if ($this->slots === []) {
             $this->slots = [
-                'open' => ['name' => 'Opening Time', 'handle' => 'open'],
-                'close' => ['name' => 'Closing Time', 'handle' => 'close'],
+                'open' => ['name' => t('Opening Time', category: 'store-hours'), 'handle' => 'open'],
+                'close' => ['name' => t('Closing Time', category: 'store-hours'), 'handle' => 'close'],
             ];
         }
     }
