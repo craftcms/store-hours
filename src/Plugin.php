@@ -22,6 +22,11 @@ class Plugin extends \craft\base\Plugin
     /**
      * @inheritdoc
      */
+    public string $schemaVersion = '1.0.2';
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
